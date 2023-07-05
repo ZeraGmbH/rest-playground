@@ -1,0 +1,213 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SourceApi",
+    "description": "A Web API for controlling a source.",
+    "contact": {
+      "name": "ZERA GmbH",
+      "url": "https://www.zera.de/en/contact/"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/Vein/GetInfo": {
+      "post": {
+        "tags": [
+          "Vein"
+        ],
+        "summary": "Gets information from Vein.",
+        "requestBody": {
+          "description": "The information to get from Vein.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeinGet"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeinGet"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeinGet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "If the information could be successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VeinGetResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VeinGetResponse"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VeinGetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request was malformed."
+          },
+          "422": {
+            "description": "If the request was wellformed but could not be retrieved."
+          },
+          "500": {
+            "description": "If an unexpected error occured."
+          }
+        }
+      }
+    },
+    "/api/v1/Vein/SetInfo": {
+      "post": {
+        "tags": [
+          "Vein"
+        ],
+        "summary": "Sets information to Vein.",
+        "requestBody": {
+          "description": "The information to set to Vein.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeinSet"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeinSet"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeinSet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "If the information could be successfully set.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request was malformed."
+          },
+          "422": {
+            "description": "If the request was wellformed but could not be set."
+          },
+          "500": {
+            "description": "If an unexpected error occured."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "VeinGet": {
+        "type": "object",
+        "properties": {
+          "EntityID": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The component ID of the desired information",
+            "nullable": false
+          },
+          "componentName": {
+            "type": "string",
+            "description": "The component name of the desired information",
+            "nullable": false
+          },
+          "MiscFieldForInfo": {
+            "type": "string",
+            "description": "However we want to handle the request field",
+            "nullable": false
+          }
+        }
+      },
+      "VeinGetResponse": {
+        "type": "object",
+        "properties": {
+          "ReturnInformation": {
+            "type": "object",
+            "description": "The desired return information formated as json"
+          }
+        }
+      },
+      "VeinSet": {
+        "type": "object",
+        "properties": {
+          "EntityID": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The component ID of the desired information",
+            "nullable": false
+          },
+          "componentName": {
+            "type": "string",
+            "description": "The component name of the desired information",
+            "nullable": false
+          },
+          "MiscFieldForInfo": {
+            "type": "string",
+            "description": "However we want to handle the setter field",
+            "nullable": false
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}
