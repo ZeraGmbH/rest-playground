@@ -14,20 +14,8 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
 
-find_package(Qt5 COMPONENTS Core CONFIG REQUIRED)
-
-include(ExternalProject)
-
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/external)
-
-ExternalProject_Add(QHTTPENGINE
-    GIT_REPOSITORY https://github.com/etherealjoy/qhttpengine.git
-    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-                -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
-)
-
-include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
-link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
+find_package(Qt5 COMPONENTS Core Network CONFIG REQUIRED)
+find_package(qhttpengine REQUIRED)
 
 add_subdirectory(data)
 add_subdirectory(src)

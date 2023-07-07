@@ -56,7 +56,6 @@ link_directories(
 )
 
 add_executable(${PROJECT_NAME} ${GENERATED_SRCS})
-add_dependencies(${PROJECT_NAME} QHTTPENGINE)
 target_link_libraries(${PROJECT_NAME} Qt5Core Qt5Network ssl crypto qhttpengine)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
