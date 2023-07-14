@@ -16,6 +16,8 @@ include(GenerateExportHeader)
 
 find_package(Qt5 COMPONENTS Core Network CONFIG REQUIRED)
 find_package(qhttpengine REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(Systemd REQUIRED libsystemd)
 
 write_basic_package_version_file(
     ${PROJECT_NAME}ConfigVersion.cmake
@@ -33,4 +35,5 @@ install(FILES
 
 add_subdirectory(data)
 add_subdirectory(src)
+add_subdirectory(systemd)
 

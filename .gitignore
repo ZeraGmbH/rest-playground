@@ -25,7 +25,6 @@ qrc_*.cpp
 Thumbs.db
 *.pb.*
 unittest
-*.so*
 
 # qtcreator generated files
 *.pro.user*

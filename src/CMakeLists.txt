@@ -7,12 +7,10 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Network REQUIRED)
-
 # glob for our custom sources, which are to be injected into the generated code
 file(GLOB SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/handlers/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
 
 file(GLOB HEADERS
@@ -43,6 +41,9 @@ foreach(file ${SRCS})
     endif()
 endforeach()
 
+# inject main into generated code
+list(REMOVE_ITEM GENERATED_SRCS "${GENERATED_SERVER_SRC_DIR}/main.cpp")
+list(APPEND GENERATED_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 include_directories(
     ${Qt5Core_INCLUDE_DIRS}
@@ -56,8 +57,12 @@ link_directories(
 )
 
 add_executable(${PROJECT_NAME} ${GENERATED_SRCS})
-target_link_libraries(${PROJECT_NAME} Qt5Core Qt5Network ssl crypto qhttpengine)
+target_link_libraries(${PROJECT_NAME} Qt5Core Qt5Network ssl crypto qhttpengine systemd)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
 
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

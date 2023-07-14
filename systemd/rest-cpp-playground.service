@@ -1,0 +1,11 @@
+[Unit]
+Description=Zera Vein rest Interface
+
+[Service]
+ExecStart=/usr/bin/zera-vein-rest
+User=zera-services
+NoNewPrivileges=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
