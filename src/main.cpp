@@ -26,6 +26,8 @@
 #include <qhttpengine/server.h>
 #include "OAIApiRouter.h"
 
+#include "veinentrysingleton.h"
+
 #ifdef __linux__
 void catchUnixSignals(QList<int> quitSignals) {
     auto handler = [](int sig) -> void {
@@ -76,6 +78,8 @@ int main(int argc, char * argv[])
 
     // Parse the options that were provided
     parser.process(a);
+
+    qWarning() << "Output: " << VeinEntrySingleton::getInstance().getTest();
 
     // Obtain the values
     QHostAddress address = QHostAddress(parser.value(addressOption));

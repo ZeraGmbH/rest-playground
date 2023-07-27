@@ -10,11 +10,13 @@ set(CMAKE_AUTOMOC ON)
 # glob for our custom sources, which are to be injected into the generated code
 file(GLOB SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/handlers/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/veinentrysingleton.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
 
 file(GLOB HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/handlers/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/veinentrysingleton.h
 )
 
 # for visibility in qt creator
@@ -38,12 +40,20 @@ foreach(file ${SRCS})
     if ("${GENERATED_SERVER_SRC_DIR}/handlers/${filename}" IN_LIST GENERATED_SRCS)
         list(REMOVE_ITEM GENERATED_SRCS "${GENERATED_SERVER_SRC_DIR}/handlers/${filename}")
         list(APPEND GENERATED_SRCS ${file})
+        # remove from list to add rest in bulk later
+        list(REMOVE_ITEM SRCS "${file}")
     endif()
 endforeach()
 
 # inject main into generated code
 list(REMOVE_ITEM GENERATED_SRCS "${GENERATED_SERVER_SRC_DIR}/main.cpp")
 list(APPEND GENERATED_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+# remove from list to add rest in bulk later
+list(REMOVE_ITEM SRCS "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+
+# add every leftovers custom sources, which not replace generated ones
+list(APPEND GENERATED_SRCS ${SRCS})
+
 
 include_directories(
     ${Qt5Core_INCLUDE_DIRS}
@@ -56,7 +66,7 @@ link_directories(
     ${CMAKE_PREFIX_PATH}/lib
 )
 
-add_executable(${PROJECT_NAME} ${GENERATED_SRCS})
+add_executable(${PROJECT_NAME} ${GENERATED_SRCS} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} Qt5Core Qt5Network ssl crypto qhttpengine systemd)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
