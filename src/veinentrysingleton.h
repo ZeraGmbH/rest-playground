@@ -2,6 +2,11 @@
 #define VEINENTRYSINGLETON_H
 
 #include <QObject>
+#include <VfEvent/ve_eventhandler.h>
+#include <VfNet2/vn_networksystem.h>
+#include <VfNet2/vn_tcpsystem.h>
+#include <VfConvenientCode/vfcommandeventhandlersystem.h>
+#include <VfSimplePeer/vfsimplegetter.h>
 
 class VeinEntrySingleton : public QObject
 {
@@ -16,9 +21,16 @@ public:
     }
 
     QString getTest();
+    void subscribeToEntity(unsigned int entityId);
+    VfSimpleGetterPtr triggerGetComponent(unsigned int entityId, QString componentName);
+
 private:
     VeinEntrySingleton();
 
+    VeinEvent::EventHandler m_eventHandler;
+    VeinNet::NetworkSystem m_netSystem;
+    VeinNet::TcpSystem m_tcpSystem;
+    VfCommandEventHandlerSystem m_cmdEventHandlerSystem;
 
     QString m_Test;
 public:

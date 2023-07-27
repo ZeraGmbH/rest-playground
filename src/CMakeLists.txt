@@ -61,13 +61,34 @@ include_directories(
     ${GENERATED_SERVER_SRC_DIR}/models
     ${GENERATED_SERVER_SRC_DIR}/handlers
     ${GENERATED_SERVER_SRC_DIR}/requests
+
 )
 link_directories(
     ${CMAKE_PREFIX_PATH}/lib
 )
 
 add_executable(${PROJECT_NAME} ${GENERATED_SRCS} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} Qt5Core Qt5Network ssl crypto qhttpengine systemd)
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+    Qt5Core
+    Qt5Network
+    ssl
+    crypto
+    qhttpengine
+    systemd
+    Zera::VfEvent
+    Zera::VfTcp
+    Zera::VfConvenientCode
+    Zera::VfSimplePeer
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    )
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
 
