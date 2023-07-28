@@ -79,12 +79,17 @@ int main(int argc, char * argv[])
     // Parse the options that were provided
     parser.process(a);
 
-    qWarning() << "Output: " << VeinEntrySingleton::getInstance().getTest();
-
+    QString categoryLoggingFormat = "%{if-debug}DD%{endif}%{if-warning}WW%{endif}%{if-critical}EE%{endif}%{if-fatal}FATAL%{endif} %{category} %{message}";
+    QStringList loggingFilters = QStringList() << QString("%1.debug=true").arg(VEIN_EVENT().categoryName()) <<
+                                 QString("%1.debug=true").arg(VEIN_NET_VERBOSE().categoryName()) <<
+                                 QString("%1.debug=true").arg(VEIN_NET_INTRO_VERBOSE().categoryName()) << //< Introspection logging is still enabled
+                                 QString("%1.debug=true").arg(VEIN_NET_TCP_VERBOSE().categoryName());
+    QLoggingCategory::setFilterRules(loggingFilters.join("\n"));
+    qSetMessagePattern(categoryLoggingFormat);
     // Obtain the values
     QHostAddress address = QHostAddress(parser.value(addressOption));
     quint16 port = static_cast<quint16>(parser.value(portOption).toInt());
-
+    VeinEntrySingleton::getInstance();
     QSharedPointer<OpenAPI::OAIApiRequestHandler> handler(new OpenAPI::OAIApiRequestHandler());
     auto router = QSharedPointer<OpenAPI::OAIApiRouter>::create();
     router->setUpRoutes();

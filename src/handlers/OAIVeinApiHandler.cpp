@@ -15,8 +15,13 @@
 #include <QVariantMap>
 #include <QDebug>
 
+#include <VfSimplePeer/vfsimplegetter.h>
+
 #include "OAIVeinApiHandler.h"
 #include "OAIVeinApiRequest.h"
+#include "veinentrysingleton.h"
+
+
 
 namespace OpenAPI {
 
@@ -41,6 +46,12 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
         wJson.insert("ReceivedMiscInfo", oai_vein_get.getMiscFieldForInfo());
 
         QJsonDocument wDoc(wJson);
+
+        VeinEntrySingleton::getInstance().subscribeToEntity(0);
+
+        VfSimpleGetterPtr wGetPtr = VeinEntrySingleton::getInstance().triggerGetComponent(0, "Entities");
+
+        connect(wGetPtr.get(), &VfSimpleGetter::sigGetFinish, this, &OAIVeinApiHandler::apiV1VeinGetInfoPostResponse);
         res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
         reqObj->apiV1VeinGetInfoPostResponse(res);
     }
@@ -59,6 +70,11 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
 
         reqObj->apiV1VeinSetInfoPostResponse(res);
     }
+}
+
+void OAIVeinApiHandler::apiV1VeinGetInfoPostResponse(bool ok, QVariant data)
+{
+    qWarning() << "Ding Ding something came in bool: " << ok << "and data: " << data.toString();
 }
 
 

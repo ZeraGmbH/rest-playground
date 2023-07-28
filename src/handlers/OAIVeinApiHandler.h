@@ -34,6 +34,7 @@ public:
 public slots:
     virtual void apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get);
     virtual void apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set);
+    virtual void apiV1VeinGetInfoPostResponse(bool ok, QVariant data);
     
 
 };

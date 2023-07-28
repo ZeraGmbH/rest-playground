@@ -20,19 +20,18 @@ public:
         return instance;
     }
 
-    QString getTest();
     void subscribeToEntity(unsigned int entityId);
     VfSimpleGetterPtr triggerGetComponent(unsigned int entityId, QString componentName);
 
 private:
     VeinEntrySingleton();
+    void feedEventLoop();
 
     VeinEvent::EventHandler m_eventHandler;
     VeinNet::NetworkSystem m_netSystem;
     VeinNet::TcpSystem m_tcpSystem;
     VfCommandEventHandlerSystem m_cmdEventHandlerSystem;
 
-    QString m_Test;
 public:
     VeinEntrySingleton(VeinEntrySingleton const&)   = delete;
     void operator=(VeinEntrySingleton const&)       = delete;
