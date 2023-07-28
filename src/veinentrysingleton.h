@@ -25,7 +25,6 @@ public:
 
 private:
     VeinEntrySingleton();
-    void feedEventLoop();
 
     VeinEvent::EventHandler m_eventHandler;
     VeinNet::NetworkSystem m_netSystem;

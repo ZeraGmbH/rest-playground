@@ -49,7 +49,7 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
 
         VeinEntrySingleton::getInstance().subscribeToEntity(0);
 
-        VfSimpleGetterPtr wGetPtr = VeinEntrySingleton::getInstance().triggerGetComponent(0, "Entities");
+        VfSimpleGetterPtr wGetPtr = VeinEntrySingleton::getInstance().triggerGetComponent(0, "EntityName");
 
         connect(wGetPtr.get(), &VfSimpleGetter::sigGetFinish, this, &OAIVeinApiHandler::apiV1VeinGetInfoPostResponse);
         res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
