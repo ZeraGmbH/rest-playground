@@ -15,7 +15,7 @@
 #include <QVariantMap>
 #include <QDebug>
 
-#include <VfSimplePeer/vfsimplegetter.h>
+#include <VfConvenientCode/vfatomicclientcomponentgetter.h>
 
 #include "OAIVeinApiHandler.h"
 #include "OAIVeinApiRequest.h"
@@ -38,22 +38,24 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
-        OAIVeinGetResponse res;
-
-        QJsonObject wJson;
-        wJson.insert("ReceivedEntityID", oai_vein_get.getEntityId());
-        wJson.insert("ReceivedComponentName", oai_vein_get.getComponentName());
-        wJson.insert("ReceivedMiscInfo", oai_vein_get.getMiscFieldForInfo());
-
-        QJsonDocument wDoc(wJson);
-
         VeinEntrySingleton::getInstance().subscribeToEntity(0);
 
-        VfSimpleGetterPtr wGetPtr = VeinEntrySingleton::getInstance().triggerGetComponent(0, "EntityName");
+        QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentGetterPtr> getterPair = VeinEntrySingleton::getInstance().triggerGetComponent(0, "EntityName");
+        VfCmdEventItemEntityPtr item = getterPair.first;
+        connect(getterPair.second.get(), &VfAtomicClientComponentGetter::sigGetFinish, [reqObj,item](bool ok, QVariant data){
+            OAIVeinGetResponse res;
 
-        connect(wGetPtr.get(), &VfSimpleGetter::sigGetFinish, this, &OAIVeinApiHandler::apiV1VeinGetInfoPostResponse);
-        res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
-        reqObj->apiV1VeinGetInfoPostResponse(res);
+            QJsonObject wJson;
+            wJson.insert("ReceivedEntityID", data.toString());
+            wJson.insert("ReceivedComponentName", "oai_vein_get.getComponentName()");
+            wJson.insert("ReceivedMiscInfo", "oai_vein_get.getMiscFieldForInfo()");
+
+            QJsonDocument wDoc(wJson);
+
+            res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
+            reqObj->apiV1VeinGetInfoPostResponse(res);
+            VeinEntrySingleton::getInstance().removeItem(item);
+        });
     }
 }
 void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
@@ -70,11 +72,6 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
 
         reqObj->apiV1VeinSetInfoPostResponse(res);
     }
-}
-
-void OAIVeinApiHandler::apiV1VeinGetInfoPostResponse(bool ok, QVariant data)
-{
-    qWarning() << "Ding Ding something came in bool: " << ok << "and data: " << data.toString();
 }
 
 

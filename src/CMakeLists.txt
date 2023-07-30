@@ -10,13 +10,12 @@ set(CMAKE_AUTOMOC ON)
 # glob for our custom sources, which are to be injected into the generated code
 file(GLOB SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/handlers/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/veinentrysingleton.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
 
 file(GLOB HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/handlers/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/veinentrysingleton.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
 )
 
 # for visibility in qt creator
@@ -79,7 +78,6 @@ target_link_libraries(${PROJECT_NAME}
     Zera::VfEvent
     Zera::VfTcp
     Zera::VfConvenientCode
-    Zera::VfSimplePeer
 )
 
 target_include_directories(${PROJECT_NAME}

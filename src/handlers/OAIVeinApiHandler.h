@@ -19,8 +19,13 @@
 #include "OAIVeinGetResponse.h"
 #include "OAIVeinSet.h"
 #include <QString>
+#include <QHash>
+#include <VfConvenientCode/vfatomicclientcomponentgetter.h>
+
+
 
 namespace OpenAPI {
+class OAIVeinApiRequest;
 
 class OAIVeinApiHandler : public QObject
 {
@@ -30,12 +35,9 @@ public:
     OAIVeinApiHandler();
     virtual ~OAIVeinApiHandler();
 
-
 public slots:
     virtual void apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get);
     virtual void apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set);
-    virtual void apiV1VeinGetInfoPostResponse(bool ok, QVariant data);
-    
 
 };
 
