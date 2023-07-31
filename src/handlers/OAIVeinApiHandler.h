@@ -20,7 +20,7 @@
 #include "OAIVeinSet.h"
 #include <QString>
 #include <QHash>
-#include <VfConvenientCode/vfatomicclientcomponentgetter.h>
+#include <VfConvenientCode/vfatomicclientcomponentfetcher.h>
 
 
 

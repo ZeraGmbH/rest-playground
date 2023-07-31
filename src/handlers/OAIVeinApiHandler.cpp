@@ -15,7 +15,7 @@
 #include <QVariantMap>
 #include <QDebug>
 
-#include <VfConvenientCode/vfatomicclientcomponentgetter.h>
+#include <VfConvenientCode/vfatomicclientcomponentfetcher.h>
 
 #include "OAIVeinApiHandler.h"
 #include "OAIVeinApiRequest.h"
@@ -40,9 +40,9 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
     {
         VeinEntrySingleton::getInstance().subscribeToEntity(0);
 
-        QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentGetterPtr> getterPair = VeinEntrySingleton::getInstance().triggerGetComponent(0, "EntityName");
+        QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentFetcherPtr> getterPair = VeinEntrySingleton::getInstance().triggerGetComponent(0, "EntityName");
         VfCmdEventItemEntityPtr item = getterPair.first;
-        connect(getterPair.second.get(), &VfAtomicClientComponentGetter::sigGetFinish, [reqObj,item](bool ok, QVariant data){
+        connect(getterPair.second.get(), &VfAtomicClientComponentFetcher::sigGetFinish, [reqObj,item](bool ok, QVariant data){
             OAIVeinGetResponse res;
 
             QJsonObject wJson;

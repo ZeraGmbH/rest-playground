@@ -6,7 +6,7 @@
 #include <VfNet2/vn_networksystem.h>
 #include <VfNet2/vn_tcpsystem.h>
 #include <VfConvenientCode/vfcommandeventhandlersystem.h>
-#include <VfConvenientCode/vfatomicclientcomponentgetter.h>
+#include <VfConvenientCode/vfatomicclientcomponentfetcher.h>
 
 class VeinEntrySingleton : public QObject
 {
@@ -21,7 +21,7 @@ public:
     }
 
     void subscribeToEntity(unsigned int entityId);
-    QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentGetterPtr> triggerGetComponent(unsigned int entityId, QString componentName);
+    QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentFetcherPtr> triggerGetComponent(unsigned int entityId, QString componentName);
     void removeItem(VfCmdEventItemEntityPtr getter);
 
 private:

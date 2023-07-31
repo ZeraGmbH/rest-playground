@@ -12,10 +12,10 @@ void VeinEntrySingleton::subscribeToEntity(unsigned int entityId)
     m_cmdEventHandlerSystem.removeItem(entityToSubscribe);
 }
 
-QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentGetterPtr> VeinEntrySingleton::triggerGetComponent(unsigned int entityId, QString componentName)
+QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentFetcherPtr> VeinEntrySingleton::triggerGetComponent(unsigned int entityId, QString componentName)
 {
     VfCmdEventItemEntityPtr entityItem = VfCmdEventItemEntity::create(entityId);
-    VfAtomicClientComponentGetterPtr getter = VfAtomicClientComponentGetter::create(componentName, entityItem);
+    VfAtomicClientComponentFetcherPtr getter = VfAtomicClientComponentFetcher::create(componentName, entityItem);
     m_cmdEventHandlerSystem.addItem(entityItem);
     entityItem->addItem(getter);
     getter->startGetComponent();
