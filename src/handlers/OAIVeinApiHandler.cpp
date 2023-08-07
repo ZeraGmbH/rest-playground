@@ -37,13 +37,13 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
     if( reqObj != nullptr )
     {
         TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(oai_vein_get.getEntityId(), oai_vein_get.getComponentName());
-        std::shared_ptr<TaskSimpleVeinGetter> sharedPtr = std::move(task);
-        connect(sharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, sharedPtr](bool ok, int taskId){
+        std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
+        connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr](bool ok, int taskId){
 
             OAIVeinGetResponse res;
             QJsonObject wJson;
             if (ok)
-                wJson.insert("ReturnInformation", sharedPtr->getValue().toString());
+                wJson.insert("ReturnInformation", taskSharedPtr->getValue().toString());
             else
                 wJson.insert("ReturnInformation", "Timeout or not existing entity or component");
 
@@ -52,7 +52,7 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
             res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
             reqObj->apiV1VeinGetInfoPostResponse(res);
         });
-        sharedPtr->start();
+        taskSharedPtr->start();
     }
 }
 void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
