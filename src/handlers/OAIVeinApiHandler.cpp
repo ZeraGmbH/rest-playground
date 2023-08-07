@@ -41,7 +41,10 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
 
             OAIVeinGetResponse res;
             QJsonObject wJson;
-            wJson.insert("ReturnInformation", task->getValue().toString());
+            if (ok)
+                wJson.insert("ReturnInformation", task->getValue().toString());
+            else
+                wJson.insert("ReturnInformation", "Timeout or not existing entity or component");
             QJsonDocument wDoc(wJson);
 
             res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
@@ -55,6 +58,8 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
+        TaskSimpleVeinSetterPtr task = VeinEntrySingleton::getInstance().setToVein(oai_vein_set.getEntityId(),oai_vein_set.getComponentName(), oai_vein_set.getMiscFieldForInfo());
+
         OAIProblemDetails res;
 
         res.setStatus(200);
@@ -65,6 +70,10 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
         reqObj->apiV1VeinSetInfoPostResponse(res);
     }
 }
+
+
+
+
 
 
 }

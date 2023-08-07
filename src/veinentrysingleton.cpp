@@ -10,6 +10,13 @@ TaskSimpleVeinGetterPtr VeinEntrySingleton::getFromVein(int entityId, QString co
     return task;
 }
 
+TaskSimpleVeinSetterPtr VeinEntrySingleton::setToVein(int entityId, QString componentName, QVariant value)
+{
+    TaskSimpleVeinSetterPtr task = TaskSimpleVeinSetter::create(entityId, componentName, value, m_cmdEventHandlerSystem);
+
+    return task;
+}
+
 VeinEntrySingleton::VeinEntrySingleton() : m_cmdEventHandlerSystem(VfCmdEventHandlerSystem::create())
 {
     m_eventHandler.addSubsystem(m_cmdEventHandlerSystem.get());

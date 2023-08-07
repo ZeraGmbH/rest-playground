@@ -7,6 +7,7 @@
 #include <VfNet2/vn_tcpsystem.h>
 #include <VfConvenientCode/vf_cmd_event_handler_system.h>
 #include <VfConvenientCode/tasksimpleveingetter.h>
+#include <VfConvenientCode/tasksimpleveinsetter.h>
 
 class VeinEntrySingleton : public QObject
 {
@@ -21,6 +22,7 @@ public:
     }
 
     TaskSimpleVeinGetterPtr getFromVein(int entityId, QString componentName);
+    TaskSimpleVeinSetterPtr setToVein(int entityId, QString componentName, QVariant value);
 
 private:
     VeinEntrySingleton();
