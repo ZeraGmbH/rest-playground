@@ -1,35 +1,17 @@
 #include "veinentrysingleton.h"
-#include <VfConvenientCode/vfatomiccliententitysubscriber.h>
-
 #include <QAbstractEventDispatcher>
 #include <QCoreApplication>
 
-void VeinEntrySingleton::subscribeToEntity(unsigned int entityId)
+
+TaskSimpleVeinGetterPtr VeinEntrySingleton::getFromVein(int entityId, QString componentName)
 {
-    VfAtomicClientEntitySubscriberPtr entityToSubscribe = VfAtomicClientEntitySubscriber::create(entityId);
-    m_cmdEventHandlerSystem.addItem(entityToSubscribe);
-    entityToSubscribe->sendSubscription();
-    m_cmdEventHandlerSystem.removeItem(entityToSubscribe);
+    TaskSimpleVeinGetterPtr task = TaskSimpleVeinGetter::create(entityId, componentName, m_cmdEventHandlerSystem);
+    return task;
 }
 
-QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentFetcherPtr> VeinEntrySingleton::triggerGetComponent(unsigned int entityId, QString componentName)
+VeinEntrySingleton::VeinEntrySingleton() : m_cmdEventHandlerSystem(VfCmdEventHandlerSystem::create())
 {
-    VfCmdEventItemEntityPtr entityItem = VfCmdEventItemEntity::create(entityId);
-    VfAtomicClientComponentFetcherPtr getter = VfAtomicClientComponentFetcher::create(componentName, entityItem);
-    m_cmdEventHandlerSystem.addItem(entityItem);
-    entityItem->addItem(getter);
-    getter->startGetComponent();
-    return qMakePair(entityItem, getter);
-}
-
-void VeinEntrySingleton::removeItem(VfCmdEventItemEntityPtr getter)
-{
-    m_cmdEventHandlerSystem.removeItem(getter);
-}
-
-VeinEntrySingleton::VeinEntrySingleton()
-{
-    m_eventHandler.addSubsystem(&m_cmdEventHandlerSystem);
+    m_eventHandler.addSubsystem(m_cmdEventHandlerSystem.get());
     m_netSystem.setOperationMode(VeinNet::NetworkSystem::VNOM_PASS_THROUGH);
     m_eventHandler.addSubsystem(&m_netSystem);
     m_eventHandler.addSubsystem(&m_tcpSystem);

@@ -18,6 +18,7 @@ find_package(Qt5 COMPONENTS Core Network CONFIG REQUIRED)
 find_package(qhttpengine REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(VeinFramework REQUIRED)
+find_package(ZenuxCore REQUIRED)
 pkg_check_modules(Systemd REQUIRED libsystemd)
 
 write_basic_package_version_file(

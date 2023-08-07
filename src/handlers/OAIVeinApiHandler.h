@@ -20,9 +20,6 @@
 #include "OAIVeinSet.h"
 #include <QString>
 #include <QHash>
-#include <VfConvenientCode/vfatomicclientcomponentfetcher.h>
-
-
 
 namespace OpenAPI {
 class OAIVeinApiRequest;

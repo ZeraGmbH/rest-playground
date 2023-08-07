@@ -5,8 +5,8 @@
 #include <VfEvent/ve_eventhandler.h>
 #include <VfNet2/vn_networksystem.h>
 #include <VfNet2/vn_tcpsystem.h>
-#include <VfConvenientCode/vfcommandeventhandlersystem.h>
-#include <VfConvenientCode/vfatomicclientcomponentfetcher.h>
+#include <VfConvenientCode/vf_cmd_event_handler_system.h>
+#include <VfConvenientCode/tasksimpleveingetter.h>
 
 class VeinEntrySingleton : public QObject
 {
@@ -20,9 +20,7 @@ public:
         return instance;
     }
 
-    void subscribeToEntity(unsigned int entityId);
-    QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentFetcherPtr> triggerGetComponent(unsigned int entityId, QString componentName);
-    void removeItem(VfCmdEventItemEntityPtr getter);
+    TaskSimpleVeinGetterPtr getFromVein(int entityId, QString componentName);
 
 private:
     VeinEntrySingleton();
@@ -30,7 +28,8 @@ private:
     VeinEvent::EventHandler m_eventHandler;
     VeinNet::NetworkSystem m_netSystem;
     VeinNet::TcpSystem m_tcpSystem;
-    VfCommandEventHandlerSystem m_cmdEventHandlerSystem;
+    VfCmdEventHandlerSystemPtr m_cmdEventHandlerSystem;
+
 
 public:
     VeinEntrySingleton(VeinEntrySingleton const&)   = delete;

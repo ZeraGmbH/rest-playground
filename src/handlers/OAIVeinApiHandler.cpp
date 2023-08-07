@@ -15,8 +15,6 @@
 #include <QVariantMap>
 #include <QDebug>
 
-#include <VfConvenientCode/vfatomicclientcomponentfetcher.h>
-
 #include "OAIVeinApiHandler.h"
 #include "OAIVeinApiRequest.h"
 #include "veinentrysingleton.h"
@@ -38,6 +36,19 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
+        TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(0, "EntityName");
+        connect(task.get(), &TaskTemplate::sigFinish, this, [reqObj, &task](bool ok, int taskId){
+
+            OAIVeinGetResponse res;
+            QJsonObject wJson;
+            wJson.insert("ReturnInformation", task->getValue().toString());
+            QJsonDocument wDoc(wJson);
+
+            res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
+            reqObj->apiV1VeinGetInfoPostResponse(res);
+        });
+        task->start();
+/*
         VeinEntrySingleton::getInstance().subscribeToEntity(0);
 
         QPair<VfCmdEventItemEntityPtr, VfAtomicClientComponentFetcherPtr> getterPair = VeinEntrySingleton::getInstance().triggerGetComponent(0, "EntityName");
@@ -56,6 +67,7 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
             reqObj->apiV1VeinGetInfoPostResponse(res);
             VeinEntrySingleton::getInstance().removeItem(item);
         });
+*/
     }
 }
 void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
