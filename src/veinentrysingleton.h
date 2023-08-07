@@ -30,7 +30,6 @@ private:
     VeinNet::TcpSystem m_tcpSystem;
     VfCmdEventHandlerSystemPtr m_cmdEventHandlerSystem;
 
-
 public:
     VeinEntrySingleton(VeinEntrySingleton const&)   = delete;
     void operator=(VeinEntrySingleton const&)       = delete;
