@@ -187,6 +187,11 @@
           "ReturnInformation": {
             "type": "object",
             "description": "The desired return information formated as json"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       },
