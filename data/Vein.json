@@ -117,10 +117,44 @@
             }
           },
           "400": {
-            "description": "If the request was malformed."
+            "description": "If the request was malformed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           },
           "422": {
-            "description": "If the request was wellformed but could not be set."
+            "description": "If the request was wellformed but could not be set.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           },
           "500": {
             "description": "If an unexpected error occured."
@@ -143,11 +177,6 @@
           "componentName": {
             "type": "string",
             "description": "The component name of the desired information",
-            "nullable": false
-          },
-          "MiscFieldForInfo": {
-            "type": "string",
-            "description": "However we want to handle the request field",
             "nullable": false
           }
         }
@@ -175,9 +204,9 @@
             "description": "The component name of the desired information",
             "nullable": false
           },
-          "MiscFieldForInfo": {
+          "newValue": {
             "type": "string",
-            "description": "However we want to handle the setter field",
+            "description": "newValue to set to component",
             "nullable": false
           }
         }

@@ -19,8 +19,6 @@
 #include "OAIVeinApiRequest.h"
 #include "veinentrysingleton.h"
 
-
-
 namespace OpenAPI {
 
 OAIVeinApiHandler::OAIVeinApiHandler(){
@@ -60,22 +58,28 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
-        TaskSimpleVeinSetterPtr task = VeinEntrySingleton::getInstance().setToVein(oai_vein_set.getEntityId(),oai_vein_set.getComponentName(), oai_vein_set.getMiscFieldForInfo());
+        TaskSimpleVeinSetterPtr task = VeinEntrySingleton::getInstance().setToVein(oai_vein_set.getEntityId(),oai_vein_set.getComponentName(), oai_vein_set.getNewValue());
 
-        OAIProblemDetails res;
+        std::shared_ptr<TaskSimpleVeinSetter> taskSharedPtr = std::move(task);
 
-        res.setStatus(200);
-        res.setDetail(oai_vein_set.getComponentName());
-        res.setTitle(oai_vein_set.getMiscFieldForInfo());
-        res.setType(QString::number(oai_vein_set.getEntityId()));
+        connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_set](bool ok, int taskId){
 
-        reqObj->apiV1VeinSetInfoPostResponse(res);
+            OAIProblemDetails res;
+            if (ok)
+                res.setStatus(200);
+            else if (oai_vein_set.is_entity_id_Valid() && oai_vein_set.is_component_name_Valid() && oai_vein_set.is_new_value_Valid())
+                res.setStatus(400);
+            else
+                res.setStatus(422);
+
+            QString str = "Entity Id: " + QString::number(oai_vein_set.getEntityId()) + " Component name: " + oai_vein_set.getComponentName() + " New Value: " + oai_vein_set.getNewValue();
+            res.setDetail(str);
+            res.setTitle("Setter command output");
+            res.setType("");
+            reqObj->apiV1VeinSetInfoPostResponse(res);
+        });
+        taskSharedPtr->start();
     }
 }
-
-
-
-
-
 
 }
