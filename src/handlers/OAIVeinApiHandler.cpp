@@ -36,6 +36,18 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
     {
         TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(oai_vein_get.getEntityId(), oai_vein_get.getComponentName());
         std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
+
+        if (!oai_vein_get.is_entity_id_Valid() || !oai_vein_get.is_component_name_Valid())
+        {
+            OAIProblemDetails res;
+            res.setStatus(400);
+            res.setDetail("Input not valid: Entity Id or Component name");
+            res.setTitle("Getter command output");
+            res.setType("");
+            reqObj->apiV1VeinSetInfoPostResponse(res);
+            return;
+        }
+
         connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_get](bool ok, int taskId){
 
             OAIVeinGetResponse res;
@@ -44,11 +56,6 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
             {
                 wJson.insert("ReturnInformation", taskSharedPtr->getValue().toString());
                 res.setStatus(200);
-            }
-            else if (!oai_vein_get.is_entity_id_Valid() || !oai_vein_get.is_component_name_Valid())
-            {
-                wJson.insert("ReturnInformation", "Entity Id or Component name invalid");
-                res.setStatus(400);
             }
             else
             {
@@ -72,11 +79,21 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
         TaskSimpleVeinSetterPtr task = VeinEntrySingleton::getInstance().setToVein(oai_vein_set.getEntityId(),oai_vein_set.getComponentName(), oai_vein_set.getNewValue());
         std::shared_ptr<TaskSimpleVeinSetter> taskSharedPtr = std::move(task);
 
-        if (oai_vein_set.getEntityId() == 0)        // if system entity discard (system entity write protected)
+        if (oai_vein_set.getEntityId() == 0)
         {
             OAIProblemDetails res;
             res.setStatus(500);
             res.setDetail("Not allowed: System entity is write protected");
+            res.setTitle("Setter command output");
+            res.setType("");
+            reqObj->apiV1VeinSetInfoPostResponse(res);
+            return;
+        }
+        else if (!oai_vein_set.is_entity_id_Valid() || !oai_vein_set.is_component_name_Valid() || !oai_vein_set.is_new_value_Valid())
+        {
+            OAIProblemDetails res;
+            res.setStatus(400);
+            res.setDetail("Input not valid: Entity Id or Component name");
             res.setTitle("Setter command output");
             res.setType("");
             reqObj->apiV1VeinSetInfoPostResponse(res);
@@ -87,8 +104,6 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
             OAIProblemDetails res;
             if (ok)
                 res.setStatus(200);
-            else if (oai_vein_set.is_entity_id_Valid() && oai_vein_set.is_component_name_Valid() && oai_vein_set.is_new_value_Valid())
-                res.setStatus(400);
             else
                 res.setStatus(422);
 
