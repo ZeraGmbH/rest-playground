@@ -47,8 +47,8 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
             reqObj->apiV1VeinSetInfoPostResponse(res);
             return;
         }
-
-        connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_get](bool ok, int taskId){
+        auto conn = std::make_shared<QMetaObject::Connection>();
+        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_get, conn](bool ok, int taskId){
 
             OAIVeinGetResponse res;
             if (ok)
@@ -65,6 +65,7 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
             }
 
             reqObj->apiV1VeinGetInfoPostResponse(res);
+            disconnect(*conn);
         });
         taskSharedPtr->start();
     }
@@ -98,7 +99,8 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
             return;
         }
 
-        connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_set](bool ok, int taskId){
+        auto conn = std::make_shared<QMetaObject::Connection>();
+        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [conn, reqObj, taskSharedPtr, oai_vein_set](bool ok, int taskId){
             OAIProblemDetails res;
             if (ok)
                 res.setStatus(200);
@@ -110,6 +112,7 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
             res.setTitle("Setter command output");
             res.setType("");
             reqObj->apiV1VeinSetInfoPostResponse(res);
+            disconnect(*conn);
         });
         taskSharedPtr->start();
     }
