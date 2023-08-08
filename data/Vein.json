@@ -202,9 +202,16 @@
         "type": "object",
         "properties": {
           "ReturnInformation": {
-            "type": "object",
-            "description": "The desired return information formated as json"
+            "type": "string",
+            "description": "The desired return information formated as json",
+            "nullable" : false
           },
+          "type": {
+            "type": "string",
+            "description": "The original data Type",
+            "nullable" : false
+          },
+
           "status": {
             "type": "integer",
             "format": "int32",

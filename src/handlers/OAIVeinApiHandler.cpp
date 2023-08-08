@@ -51,21 +51,19 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
         connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_get](bool ok, int taskId){
 
             OAIVeinGetResponse res;
-            QJsonObject wJson;
             if (ok)
             {
-                wJson.insert("ReturnInformation", taskSharedPtr->getValue().toString());
+                res.setReturnInformation(taskSharedPtr->getValue().toString());
+                res.setType(taskSharedPtr->getValue().typeName());
                 res.setStatus(200);
             }
             else
             {
-                wJson.insert("ReturnInformation", "Timeout or not existing entity or component");
+                res.setReturnInformation("Timeout or not existing entity or component");
+                res.setType("Invalid");
                 res.setStatus(422);
             }
 
-            QJsonDocument wDoc(wJson);
-
-            res.setReturnInformation(OAIObject(wDoc.toJson(QJsonDocument::Compact)));
             reqObj->apiV1VeinGetInfoPostResponse(res);
         });
         taskSharedPtr->start();
