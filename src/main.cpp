@@ -89,7 +89,7 @@ int main(int argc, char * argv[])
     // Obtain the values
     QHostAddress address = QHostAddress(parser.value(addressOption));
     quint16 port = static_cast<quint16>(parser.value(portOption).toInt());
-    VeinEntrySingleton::getInstance();
+    //VeinEntrySingleton::getInstance();
     QSharedPointer<OpenAPI::OAIApiRequestHandler> handler(new OpenAPI::OAIApiRequestHandler());
     auto router = QSharedPointer<OpenAPI::OAIApiRouter>::create();
     router->setUpRoutes();

@@ -21,16 +21,11 @@ public:
         return instance;
     }
 
-    TaskSimpleVeinGetterPtr getFromVein(int entityId, QString componentName);
-    TaskSimpleVeinSetterPtr setToVein(int entityId, QString componentName, QVariant value);
+
 
 private:
     VeinEntrySingleton();
 
-    VeinEvent::EventHandler m_eventHandler;
-    VeinNet::NetworkSystem m_netSystem;
-    VeinNet::TcpSystem m_tcpSystem;
-    VfCmdEventHandlerSystemPtr m_cmdEventHandlerSystem;
 
 public:
     VeinEntrySingleton(VeinEntrySingleton const&)   = delete;
