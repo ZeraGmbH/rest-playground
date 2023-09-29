@@ -34,40 +34,11 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
-        TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(oai_vein_get.getEntityId(), oai_vein_get.getComponentName());
-        std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
 
-        if (!oai_vein_get.is_entity_id_Valid() || !oai_vein_get.is_component_name_Valid())
-        {
-            OAIProblemDetails res;
-            res.setStatus(400);
-            res.setDetail("Input not valid: Entity Id or Component name");
-            res.setTitle("Getter command output");
-            res.setType("");
-            reqObj->apiV1VeinSetInfoPostResponse(res);
-            return;
-        }
-        auto conn = std::make_shared<QMetaObject::Connection>();
-        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_get, conn](bool ok, int taskId){
-
-            OAIVeinGetResponse res;
-            if (ok)
-            {
-                res.setReturnInformation(taskSharedPtr->getValue().toString());
-                res.setType(taskSharedPtr->getValue().typeName());
-                res.setStatus(200);
-            }
-            else
-            {
-                res.setReturnInformation("Timeout or not existing entity or component");
-                res.setType("Invalid");
-                res.setStatus(422);
-            }
-
-            reqObj->apiV1VeinGetInfoPostResponse(res);
-            disconnect(*conn);
-        });
-        taskSharedPtr->start();
+        OAIVeinGetResponse res;
+        res.setReturnInformation("Requested component: " + oai_vein_get.getComponentName());
+        res.setStatus(200);
+        reqObj->apiV1VeinGetInfoPostResponse(res);
     }
 }
 void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
@@ -75,46 +46,10 @@ void OAIVeinApiHandler::apiV1VeinSetInfoPost(OAIVeinSet oai_vein_set) {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
-        TaskSimpleVeinSetterPtr task = VeinEntrySingleton::getInstance().setToVein(oai_vein_set.getEntityId(),oai_vein_set.getComponentName(), oai_vein_set.getNewValue());
-        std::shared_ptr<TaskSimpleVeinSetter> taskSharedPtr = std::move(task);
-
-        if (oai_vein_set.getEntityId() == 0)
-        {
-            OAIProblemDetails res;
-            res.setStatus(500);
-            res.setDetail("Not allowed: System entity is write protected");
-            res.setTitle("Setter command output");
-            res.setType("");
-            reqObj->apiV1VeinSetInfoPostResponse(res);
-            return;
-        }
-        else if (!oai_vein_set.is_entity_id_Valid() || !oai_vein_set.is_component_name_Valid() || !oai_vein_set.is_new_value_Valid())
-        {
-            OAIProblemDetails res;
-            res.setStatus(400);
-            res.setDetail("Input not valid: Entity Id or Component name");
-            res.setTitle("Setter command output");
-            res.setType("");
-            reqObj->apiV1VeinSetInfoPostResponse(res);
-            return;
-        }
-
-        auto conn = std::make_shared<QMetaObject::Connection>();
-        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [conn, reqObj, taskSharedPtr, oai_vein_set](bool ok, int taskId){
-            OAIProblemDetails res;
-            if (ok)
-                res.setStatus(200);
-            else
-                res.setStatus(422);
-
-            QString str = "Entity Id: " + QString::number(oai_vein_set.getEntityId()) + " Component name: " + oai_vein_set.getComponentName() + " New Value: " + oai_vein_set.getNewValue();
-            res.setDetail(str);
-            res.setTitle("Setter command output");
-            res.setType("");
-            reqObj->apiV1VeinSetInfoPostResponse(res);
-            disconnect(*conn);
-        });
-        taskSharedPtr->start();
+        OAIProblemDetails res;
+        res.setTitle("Setter command response");
+        res.setType("");
+        reqObj->apiV1VeinSetInfoPostResponse(res);
     }
 }
 
