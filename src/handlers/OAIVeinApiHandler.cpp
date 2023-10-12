@@ -53,7 +53,14 @@ void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
             OAIVeinGetResponse res;
             if (ok)
             {
-                res.setReturnInformation(taskSharedPtr->getValue().toString());
+                QVariant ret = taskSharedPtr->getValue();
+                if (static_cast<QMetaType::Type>(taskSharedPtr->getValue().type()) == QMetaType::QJsonObject) {
+                    QJsonObject jsonObj = QJsonValue::fromVariant(ret).toObject();
+                    QJsonDocument doc(jsonObj);
+                    QString jsonString = doc.toJson(QJsonDocument::Compact);
+                    ret = jsonString;
+                }
+                res.setReturnInformation(ret.toString());
                 res.setType(taskSharedPtr->getValue().typeName());
                 res.setStatus(200);
             }
