@@ -38,8 +38,8 @@ void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
         TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(entity_id, component_name);
         std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
 
-
-        connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, conn](bool ok, int taskId){
+        auto conn = std::make_shared<QMetaObject::Connection>();
+        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, conn](bool ok, int taskId){
 
             OAIVeinGetResponse res;
             if (ok)
