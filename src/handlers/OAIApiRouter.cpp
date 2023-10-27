@@ -39,14 +39,14 @@ void OAIApiRouter::setOAIVeinApiHandler(QSharedPointer<OAIVeinApiHandler> handle
 }
 
 void OAIApiRouter::setUpRoutes() {
-    
-    Routes.insert(QString("%1 %2").arg("POST").arg("/api/v1/Vein/GetInfo").toLower(), [this](QHttpEngine::Socket *socket) {
-            auto reqObj = new OAIVeinApiRequest(socket, mOAIVeinApiHandler);
-            reqObj->apiV1VeinGetInfoPostRequest();
+
+    Routes.insert(QString("%1 %2").arg("GET").arg("/api/v1/Vein/").toLower(), [this](QHttpEngine::Socket *socket) {
+        auto reqObj = new OAIVeinApiRequest(socket, mOAIVeinApiHandler);
+        reqObj->apiV1VeinGetRequest();
     });
-    Routes.insert(QString("%1 %2").arg("POST").arg("/api/v1/Vein/SetInfo").toLower(), [this](QHttpEngine::Socket *socket) {
-            auto reqObj = new OAIVeinApiRequest(socket, mOAIVeinApiHandler);
-            reqObj->apiV1VeinSetInfoPostRequest();
+    Routes.insert(QString("%1 %2").arg("PUT").arg("/api/v1/Vein/").toLower(), [this](QHttpEngine::Socket *socket) {
+        auto reqObj = new OAIVeinApiRequest(socket, mOAIVeinApiHandler);
+        reqObj->apiV1VeinPutRequest();
     });
 }
 

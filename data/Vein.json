@@ -10,32 +10,33 @@
     "version": "v1"
   },
   "paths": {
-    "/api/v1/Vein/GetInfo": {
-      "post": {
+    "/api/v1/Vein/": {
+      "get": {
         "tags": [
           "Vein"
         ],
         "summary": "Gets information from Vein.",
-        "requestBody": {
-          "description": "The information to get from Vein.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VeinGet"
-              }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VeinGet"
-              }
+            "description": "EntityId of the component to fetch"
+          },
+          {
+            "in": "query",
+            "name": "component_name",
+            "required": true,
+            "schema": {
+              "type": "string"
             },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/VeinGet"
-              }
-            }
+            "description": "componentName to fetch"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "If the information could be successfully retrieved.",
@@ -84,10 +85,8 @@
             "description": "If an unexpected error occured."
           }
         }
-      }
-    },
-    "/api/v1/Vein/SetInfo": {
-      "post": {
+      },
+      "put": {
         "tags": [
           "Vein"
         ],
@@ -204,14 +203,13 @@
           "ReturnInformation": {
             "type": "string",
             "description": "The desired return information formated as json",
-            "nullable" : false
+            "nullable": false
           },
           "type": {
             "type": "string",
             "description": "The original data Type",
-            "nullable" : false
+            "nullable": false
           },
-
           "status": {
             "type": "integer",
             "format": "int32",

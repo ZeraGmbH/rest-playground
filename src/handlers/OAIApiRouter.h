@@ -60,7 +60,7 @@ public:
 
     void setUpRoutes();
     void processRequest(QHttpEngine::Socket *socket);
-    
+
     void setOAIVeinApiHandler(QSharedPointer<OAIVeinApiHandler> handler);
 private:
     QMap<QString, std::function<void(QHttpEngine::Socket *)>> Routes;
@@ -69,7 +69,7 @@ private:
     bool handleRequest(QHttpEngine::Socket *socket);
     bool handleRequestAndExtractPathParam(QHttpEngine::Socket *socket);
 
-    
+
     QSharedPointer<OAIVeinApiHandler> mOAIVeinApiHandler;
 protected:
     // override this method to provide custom class derived from ApiHandler classes
