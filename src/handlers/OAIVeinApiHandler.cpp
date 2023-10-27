@@ -38,8 +38,8 @@ void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
         TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(entity_id, component_name);
         std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
 
-        auto conn = std::make_shared<QMetaObject::Connection>();
-        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, conn](bool ok, int taskId){
+
+        connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, conn](bool ok, int taskId){
 
             OAIVeinGetResponse res;
             if (ok)
@@ -115,55 +115,4 @@ void OAIVeinApiHandler::apiV1VeinPut(OAIVeinSet oai_vein_set) {
         taskSharedPtr->start();
     }
 }
-
-//void OAIVeinApiHandler::apiV1VeinGetInfoPost(OAIVeinGet oai_vein_get) {
-//    Q_UNUSED(oai_vein_get);
-//    auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
-//    if( reqObj != nullptr )
-//    {
-//        TaskSimpleVeinGetterPtr task = VeinEntrySingleton::getInstance().getFromVein(oai_vein_get.getEntityId(), oai_vein_get.getComponentName());
-//        std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
-
-//        if (!oai_vein_get.is_entity_id_Valid() || !oai_vein_get.is_component_name_Valid())
-//        {
-//            OAIProblemDetails res;
-//            res.setStatus(400);
-//            res.setDetail("Input not valid: Entity Id or Component name");
-//            res.setTitle("Getter command output");
-//            res.setType("");
-//            reqObj->apiV1VeinSetInfoPostResponse(res);
-//            return;
-//        }
-//        auto conn = std::make_shared<QMetaObject::Connection>();
-//        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, oai_vein_get, conn](bool ok, int taskId){
-
-//            OAIVeinGetResponse res;
-//            if (ok)
-//            {
-//                QVariant ret = taskSharedPtr->getValue();
-//                if (static_cast<QMetaType::Type>(taskSharedPtr->getValue().type()) == QMetaType::QJsonObject) {
-//                    QJsonObject jsonObj = QJsonValue::fromVariant(ret).toObject();
-//                    QJsonDocument doc(jsonObj);
-//                    QString jsonString = doc.toJson(QJsonDocument::Compact);
-//                    ret = jsonString;
-//                }
-//                res.setReturnInformation(ret.toString());
-//                res.setType(taskSharedPtr->getValue().typeName());
-//                res.setStatus(200);
-//            }
-//            else
-//            {
-//                res.setReturnInformation("Timeout or not existing entity or component");
-//                res.setType("Invalid");
-//                res.setStatus(422);
-//            }
-
-//            reqObj->apiV1VeinGetInfoPostResponse(res);
-//            disconnect(*conn);
-//        });
-//        taskSharedPtr->start();
-//    }
-//}
-
-
 }
