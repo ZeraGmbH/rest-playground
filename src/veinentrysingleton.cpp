@@ -1,4 +1,5 @@
 #include "veinentrysingleton.h"
+#include <VfTcp/tcpnetworkfactory.h>
 #include <QAbstractEventDispatcher>
 #include <QCoreApplication>
 
@@ -17,7 +18,9 @@ TaskSimpleVeinSetterPtr VeinEntrySingleton::setToVein(int entityId, QString comp
     return task;
 }
 
-VeinEntrySingleton::VeinEntrySingleton() : m_cmdEventHandlerSystem(VfCmdEventHandlerSystem::create())
+VeinEntrySingleton::VeinEntrySingleton() :
+    m_tcpSystem(VeinTcp::TcpNetworkFactory::create()),
+    m_cmdEventHandlerSystem(VfCmdEventHandlerSystem::create())
 {
     m_eventHandler.addSubsystem(m_cmdEventHandlerSystem.get());
     m_netSystem.setOperationMode(VeinNet::NetworkSystem::VNOM_PASS_THROUGH);
