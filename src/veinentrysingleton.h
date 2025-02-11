@@ -2,12 +2,12 @@
 #define VEINENTRYSINGLETON_H
 
 #include <QObject>
-#include <VfEvent/ve_eventhandler.h>
-#include <VfNet2/vn_networksystem.h>
-#include <VfNet2/vn_tcpsystem.h>
-#include <VfConvenientCode/vf_cmd_event_handler_system.h>
-#include <VfConvenientCode/tasksimpleveingetter.h>
-#include <VfConvenientCode/tasksimpleveinsetter.h>
+#include <ve_eventhandler.h>
+#include <vn_networksystem.h>
+#include <vn_tcpsystem.h>
+#include <vf_cmd_event_handler_system.h>
+#include <tasksimpleveingetter.h>
+#include <tasksimpleveinsetter.h>
 
 class VeinEntrySingleton : public QObject
 {

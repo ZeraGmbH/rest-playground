@@ -1,5 +1,5 @@
 #include "veinentrysingleton.h"
-#include <VfTcp/tcpnetworkfactory.h>
+#include <tcpnetworkfactory.h>
 #include <QAbstractEventDispatcher>
 #include <QCoreApplication>
 
