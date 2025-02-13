@@ -62,9 +62,6 @@ include_directories(
     ${GENERATED_SERVER_SRC_DIR}/requests
 
 )
-link_directories(
-    ${CMAKE_PREFIX_PATH}/lib
-)
 
 add_library(${PROJECT_NAME}-lib STATIC ${GENERATED_SRCS} ${HEADERS})
 
