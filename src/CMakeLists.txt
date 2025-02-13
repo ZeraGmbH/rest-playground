@@ -24,7 +24,6 @@ file(GLOB GENERATED_SRCS
     ${GENERATED_SERVER_SRC_DIR}/models/*.cpp
     ${GENERATED_SERVER_SRC_DIR}/handlers/*.cpp
     ${GENERATED_SERVER_SRC_DIR}/requests/*.cpp
-    ${GENERATED_SERVER_SRC_DIR}/main.cpp
 )
 
 # inject our handlers into generated code
@@ -38,15 +37,8 @@ foreach(file ${SRCS})
     endif()
 endforeach()
 
-# inject main into generated code
-list(REMOVE_ITEM GENERATED_SRCS "${GENERATED_SERVER_SRC_DIR}/main.cpp")
-
-# remove from list to add rest in bulk later
-list(REMOVE_ITEM SRCS "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
-
 # add every leftovers custom sources, which not replace generated ones
 list(APPEND GENERATED_SRCS ${SRCS})
-
 
 include_directories(
     ${Qt5Core_INCLUDE_DIRS}
@@ -54,11 +46,9 @@ include_directories(
     ${GENERATED_SERVER_SRC_DIR}/models
     ${GENERATED_SERVER_SRC_DIR}/handlers
     ${GENERATED_SERVER_SRC_DIR}/requests
-
 )
 
 add_library(${PROJECT_NAME}-lib STATIC ${GENERATED_SRCS} ${HEADERS})
-
 
 target_link_libraries(${PROJECT_NAME}-lib
     PUBLIC
@@ -81,14 +71,5 @@ target_include_directories(${PROJECT_NAME}-lib
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     )
 
-add_executable(${PROJECT_NAME}
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
-)
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-    ${PROJECT_NAME}-lib
-)
+add_subdirectory(app)
 
-install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
