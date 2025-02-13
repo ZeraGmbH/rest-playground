@@ -19,7 +19,7 @@ find_package(qhttpengine REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(VeinFramework REQUIRED)
 find_package(ZenuxCore REQUIRED)
-find_package(VfConvenientCode)
+find_package(ZeraClasses)
 pkg_check_modules(Systemd REQUIRED libsystemd)
 
 write_basic_package_version_file(
@@ -39,4 +39,4 @@ install(FILES
 add_subdirectory(data)
 add_subdirectory(src)
 add_subdirectory(systemd)
-
+add_subdirectory(tests)

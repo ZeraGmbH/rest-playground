@@ -5,6 +5,7 @@
 #include <ve_eventhandler.h>
 #include <vn_networksystem.h>
 #include <vn_tcpsystem.h>
+#include <tcpnetworkfactory.h>
 #include <vs_clientstorageeventsystem.h>
 #include <vf_cmd_event_handler_system.h>
 #include <tasksimpleveingetter.h>
@@ -15,9 +16,9 @@ class VeinEntrySingleton : public QObject
     Q_OBJECT
 
 public:
-    static VeinEntrySingleton& getInstance()
+    static VeinEntrySingleton& getInstance(VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory = VeinTcp::TcpNetworkFactory::create())
     {
-        static VeinEntrySingleton instance;
+        static VeinEntrySingleton instance(tcpNetworkFactory);
 
         return instance;
     }
@@ -27,8 +28,14 @@ public:
 
     VeinStorage::AbstractDatabase* getStorageDb();
 
+    VeinEntrySingleton(VeinEntrySingleton const&)   = delete;
+    void operator=(VeinEntrySingleton const&)       = delete;
+
+signals:
+    void sigSubscriberTasksFinish(bool ok);
+
 private:
-    VeinEntrySingleton();
+    VeinEntrySingleton(VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory);
     TaskTemplatePtr createSubscriptionTask(int entityId, const QString& entityName);
 
     VeinEvent::EventHandler m_eventHandler;
@@ -37,13 +44,8 @@ private:
     VeinStorage::ClientStorageEventSystem m_storage;
     VfCmdEventHandlerSystemPtr m_cmdEventHandlerSystem;
     std::shared_ptr<QStringList> m_dummyComponentList;
-    TaskTemplatePtr m_subscriberTask;
+    TaskContainerInterfacePtr m_subscriberTask;
 
-public:
-    VeinEntrySingleton(VeinEntrySingleton const&)   = delete;
-    void operator=(VeinEntrySingleton const&)       = delete;
-
-signals:
 
 };
 
