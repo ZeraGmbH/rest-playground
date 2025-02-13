@@ -29,6 +29,7 @@ public:
 
 private:
     VeinEntrySingleton();
+    TaskTemplatePtr createSubscriptionTask(int entityId, const QString& entityName);
 
     VeinEvent::EventHandler m_eventHandler;
     VeinNet::NetworkSystem m_netSystem;

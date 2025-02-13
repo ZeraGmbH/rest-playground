@@ -39,17 +39,24 @@ VeinEntrySingleton::VeinEntrySingleton() :
     connect(&m_tcpSystem, &VeinNet::TcpSystem::sigConnnectionEstablished, this, [&](){
         m_dummyComponentList = std::make_unique<QStringList>();
 
-        m_subscriberTask = TaskClientEntitySubscribe::create(1050, m_cmdEventHandlerSystem, m_dummyComponentList, 2000, [](){
-            qWarning("Subscription timed out!");});
-        qInfo("Start subscriptions..");
-        connect(m_subscriberTask.get(), &TaskTemplate::sigFinish, [](bool ok) {
-            if(ok)
-                qInfo("Subsciptions succeded.");
-            else
-                qInfo("Subsciptions failed!");
-        });
+        m_subscriberTask = createSubscriptionTask(1050, "DFTModule");
         m_subscriberTask->start();
     });
 
+}
+
+TaskTemplatePtr VeinEntrySingleton::createSubscriptionTask(int entityId, const QString &entityName)
+{
+    const QString logText = QString("%1 (ID %2)").arg(entityName).arg(entityId);
+    TaskTemplatePtr task = TaskClientEntitySubscribe::create(entityId, m_cmdEventHandlerSystem, m_dummyComponentList, 2000, [=](){
+        qWarning("Subscription on %s timed out!", qPrintable(logText));});
+    qInfo("Start subscriptions..");
+    connect(task.get(), &TaskTemplate::sigFinish, [=](bool ok) {
+        if(ok)
+            qInfo("Subsciptions on %s succeded.", qPrintable(logText));
+        else
+            qInfo("Subsciptions on %s failed!", qPrintable(logText));
+    });
+    return task;
 }
 
