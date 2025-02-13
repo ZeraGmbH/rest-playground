@@ -78,6 +78,7 @@ target_link_libraries(${PROJECT_NAME}
     Zera::VfEvent
     Zera::VfTcp
     Zera::VfConvenientCode
+    Zera::VfStorage
 )
 
 target_include_directories(${PROJECT_NAME}
