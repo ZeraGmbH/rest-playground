@@ -39,7 +39,15 @@ VeinEntrySingleton::VeinEntrySingleton() :
     connect(&m_tcpSystem, &VeinNet::TcpSystem::sigConnnectionEstablished, this, [&](){
         m_dummyComponentList = std::make_unique<QStringList>();
 
-        m_subscriberTask = TaskClientEntitySubscribe::create(1050, m_cmdEventHandlerSystem, m_dummyComponentList, 2000, [](){qWarning("foo");});
+        m_subscriberTask = TaskClientEntitySubscribe::create(1050, m_cmdEventHandlerSystem, m_dummyComponentList, 2000, [](){
+            qWarning("Subscription timed out!");});
+        qInfo("Start subscriptions..");
+        connect(m_subscriberTask.get(), &TaskTemplate::sigFinish, [](bool ok) {
+            if(ok)
+                qInfo("Subsciptions succeded.");
+            else
+                qInfo("Subsciptions failed!");
+        });
         m_subscriberTask->start();
     });
 
