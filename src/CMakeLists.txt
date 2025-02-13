@@ -46,7 +46,7 @@ endforeach()
 
 # inject main into generated code
 list(REMOVE_ITEM GENERATED_SRCS "${GENERATED_SERVER_SRC_DIR}/main.cpp")
-list(APPEND GENERATED_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
 # remove from list to add rest in bulk later
 list(REMOVE_ITEM SRCS "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 
@@ -66,8 +66,10 @@ link_directories(
     ${CMAKE_PREFIX_PATH}/lib
 )
 
-add_executable(${PROJECT_NAME} ${GENERATED_SRCS} ${HEADERS})
-target_link_libraries(${PROJECT_NAME}
+add_library(${PROJECT_NAME}-lib STATIC ${GENERATED_SRCS} ${HEADERS})
+
+
+target_link_libraries(${PROJECT_NAME}-lib
     PUBLIC
     Qt5Core
     Qt5Network
@@ -81,18 +83,21 @@ target_link_libraries(${PROJECT_NAME}
     Zera::VfStorage
 )
 
-target_include_directories(${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}-lib
     PUBLIC
     $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     )
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
+add_executable(${PROJECT_NAME}
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
+)
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+    ${PROJECT_NAME}-lib
+)
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
