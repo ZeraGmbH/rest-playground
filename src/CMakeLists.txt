@@ -1,11 +1,5 @@
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-
 # policy to use new if IN_LIST feature
 cmake_policy(SET CMP0057 NEW)
-
-set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
 
 # glob for our custom sources, which are to be injected into the generated code
 file(GLOB SRCS
