@@ -22,27 +22,17 @@ void test_storage::initTestCase()
     TimerFactoryQtForTest::enableTest();
 }
 
-void test_storage::foo()
+void test_storage::access_storage_of_vein_singleton()
 {
-    const QString configFile = ZeraModules::ModuleManager::getInstalledSessionPath() + "/mt310s2-emob-session-ac.json";
-    ModuleManagerTestRunner testRunner(configFile);
+    std::unique_ptr<ModuleManagerTestRunner> testRunner = setupModuleManager(ZeraModules::ModuleManager::getInstalledSessionPath() + "/mt310s2-emob-session-ac.json");
 
-    VeinNet::NetworkSystem* netSystem = new VeinNet::NetworkSystem();
-    netSystem->setOperationMode(VeinNet::NetworkSystem::VNOM_PASS_THROUGH);
-    VeinNet::TcpSystem* tcpSystem = new VeinNet::TcpSystem(testRunner.getTcpNetworkFactory());
-    //do not reorder
-    testRunner.getModManFacade()->addSubsystem(netSystem);
-    testRunner.getModManFacade()->addSubsystem(tcpSystem);
-    tcpSystem->startServer(12000);
+    VeinEntrySingleton& singleton = VeinEntrySingleton::getInstance(testRunner->getTcpNetworkFactory());
     TimeMachineObject::feedEventLoop();
 
-    VeinEntrySingleton& singleton = VeinEntrySingleton::getInstance(testRunner.getTcpNetworkFactory());
-    TimeMachineObject::feedEventLoop();
+    QSignalSpy spy(&singleton, &VeinEntrySingleton::sigSubscriberTasksFinish);
+    waitForSignal(spy, 1);
 
-    //QSignalSpy spy(&singleton, &VeinEntrySingleton::sigSubscriberTasksFinish);
-    //waitForSignal(spy, 1);
-
-    TestDspInterfacePtr dspInterface = testRunner.getDspInterfaceList()[6];
+    TestDspInterfacePtr dspInterface = testRunner->getDspInterfaceList()[6];
     TestDspValues dspValues(dspInterface->getValueList());
 
     dspValues.setAllValuesSymmetricAc(5, 5, 0, 50);
@@ -51,9 +41,23 @@ void test_storage::foo()
 
     QStringList test = singleton.getStorageDb()->getComponentList(1050);
     bool hasComponent = singleton.getStorageDb()->hasStoredValue(1050, "ACT_POL_DFTPN4");
-    QVariant exampleValue = singleton.getStorageDb()->getStoredValue(1050, "ACT_POL_DFTPN4");
+    QList<double> exampleValue = singleton.getStorageDb()->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
 
-    QVERIFY(false);
+    QVERIFY(exampleValue[0] == 7.071067810058594);
+}
+
+std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
+{
+    std::unique_ptr<ModuleManagerTestRunner> testRunner = std::make_unique<ModuleManagerTestRunner>(config);
+    VeinNet::NetworkSystem* netSystem = new VeinNet::NetworkSystem();
+    netSystem->setOperationMode(VeinNet::NetworkSystem::VNOM_PASS_THROUGH);
+    VeinNet::TcpSystem* tcpSystem = new VeinNet::TcpSystem(testRunner->getTcpNetworkFactory());
+    //do not reorder
+    testRunner->getModManFacade()->addSubsystem(netSystem);
+    testRunner->getModManFacade()->addSubsystem(tcpSystem);
+    tcpSystem->startServer(12000);
+    TimeMachineObject::feedEventLoop();
+    return testRunner;
 }
 
 void test_storage::waitForSignal(QSignalSpy &signalSpy, int expectedNumberOfSignals)

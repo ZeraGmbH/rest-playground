@@ -38,10 +38,7 @@ VeinEntrySingleton::VeinEntrySingleton(VeinTcp::AbstractTcpNetworkFactoryPtr tcp
 
     m_tcpSystem.connectToServer("127.0.0.1", 12000);
 
-    connect(m_subscriberTask.get(), &TaskTemplate::sigFinish, this,[&](bool ok){
-
-        emit sigSubscriberTasksFinish(ok);
-    });
+    connect(m_subscriberTask.get(), &TaskTemplate::sigFinish, this, &VeinEntrySingleton::sigSubscriberTasksFinish);
 
     connect(&m_tcpSystem, &VeinNet::TcpSystem::sigConnnectionEstablished, this, [&](){
         m_dummyComponentList = std::make_unique<QStringList>();
