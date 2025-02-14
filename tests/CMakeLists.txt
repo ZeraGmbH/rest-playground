@@ -13,6 +13,8 @@ function(SETUP_TESTS)
         Qt5::Test
         Zera::zera-modulemanager-testlib
         zera-vein-rest-lib
+        Zera::dftmodule-demolib
+        Zera::module-testlib
     )
 endforeach()
 endfunction()

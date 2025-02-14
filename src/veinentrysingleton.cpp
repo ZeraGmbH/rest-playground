@@ -1,8 +1,9 @@
 #include "veinentrysingleton.h"
 #include "task_client_entity_subscribe.h"
-#include <tcpnetworkfactory.h>
+
 #include <QAbstractEventDispatcher>
 #include <QCoreApplication>
+#include <taskcontainerparallel.h>
 
 
 TaskSimpleVeinGetterPtr VeinEntrySingleton::getFromVein(int entityId, QString componentName)
@@ -24,9 +25,10 @@ VeinStorage::AbstractDatabase *VeinEntrySingleton::getStorageDb()
     return m_storage.getDb();
 }
 
-VeinEntrySingleton::VeinEntrySingleton() :
-    m_tcpSystem(VeinTcp::TcpNetworkFactory::create()),
-    m_cmdEventHandlerSystem(VfCmdEventHandlerSystem::create())
+VeinEntrySingleton::VeinEntrySingleton(VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory) :
+    m_tcpSystem(tcpNetworkFactory),
+    m_cmdEventHandlerSystem(VfCmdEventHandlerSystem::create()),
+    m_subscriberTask(TaskContainerParallel::create())
 {
     m_eventHandler.addSubsystem(&m_netSystem);
     m_eventHandler.addSubsystem(&m_tcpSystem);
@@ -36,13 +38,17 @@ VeinEntrySingleton::VeinEntrySingleton() :
 
     m_tcpSystem.connectToServer("127.0.0.1", 12000);
 
+    connect(m_subscriberTask.get(), &TaskTemplate::sigFinish, this,[&](bool ok){
+
+        emit sigSubscriberTasksFinish(ok);
+    });
+
     connect(&m_tcpSystem, &VeinNet::TcpSystem::sigConnnectionEstablished, this, [&](){
         m_dummyComponentList = std::make_unique<QStringList>();
 
-        m_subscriberTask = createSubscriptionTask(1050, "DFTModule");
+        m_subscriberTask->addSub(createSubscriptionTask(1050, "DFTModule"));
         m_subscriberTask->start();
     });
-
 }
 
 TaskTemplatePtr VeinEntrySingleton::createSubscriptionTask(int entityId, const QString &entityName)
