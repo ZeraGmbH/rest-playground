@@ -44,7 +44,9 @@ VeinEntrySingleton::VeinEntrySingleton(VeinTcp::AbstractTcpNetworkFactoryPtr tcp
         m_dummyComponentList = std::make_unique<QStringList>();
 
         m_subscriberTask->addSub(createSubscriptionTask(1050, "DFTModule"));
-        m_subscriberTask->addSub(createSubscriptionTask(1130, "SEC1Module"));
+        m_subscriberTask->addSub(createSubscriptionTask(1130, "SEC1Module1"));
+        m_subscriberTask->addSub(createSubscriptionTask(1150, "StatusModule1"));
+
         m_subscriberTask->start();
     });
 }

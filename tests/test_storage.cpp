@@ -27,6 +27,9 @@ void test_storage::access_storage_of_vein_singleton()
 {
     std::unique_ptr<ModuleManagerTestRunner> testRunner = setupModuleManager(ZeraModules::ModuleManager::getInstalledSessionPath() + "/mt310s2-emob-session-ac.json");
 
+    VeinEntrySingleton& veinSingleton = VeinEntrySingleton::getInstance();
+    VeinStorage::AbstractDatabase* veinStorageDb = veinSingleton.getStorageDb();
+
     TestDspInterfacePtr dspInterface = testRunner->getDspInterfaceList()[6];
     TestDspValues dspValues(dspInterface->getValueList());
 
@@ -34,19 +37,25 @@ void test_storage::access_storage_of_vein_singleton()
     dspValues.fireDftActualValues(dspInterface);
     TimeMachineObject::feedEventLoop();
 
-    QList<QString> comp1050 = VeinEntrySingleton::getInstance().getStorageDb()->getComponentList(1050);
+    QList<QString> comp1050 = veinStorageDb->getComponentList(1050);
     QVERIFY(comp1050.length() == 28);
-    QVERIFY(VeinEntrySingleton::getInstance().getStorageDb()->hasStoredValue(1050, "ACT_POL_DFTPN4") == true);
+    QVERIFY(veinStorageDb->hasStoredValue(1050, "ACT_POL_DFTPN4") == true);
 
-    QList<double> exampleValue = VeinEntrySingleton::getInstance().getStorageDb()->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
+    QList<double> exampleValue = veinStorageDb->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
 
     QVERIFY(exampleValue[0] == 7.071067810058594);
 
-    QList<QString> comp1130 = VeinEntrySingleton::getInstance().getStorageDb()->getComponentList(1130);
+    QList<QString> comp1130 = veinStorageDb->getComponentList(1130);
     QVERIFY(comp1130.length() == 37);
-    QVERIFY(VeinEntrySingleton::getInstance().getStorageDb()->hasStoredValue(1130, "ACT_Status") == true);
+    QVERIFY(veinStorageDb->hasStoredValue(1130, "ACT_Status") == true);
 
-    QVariant status = VeinEntrySingleton::getInstance().getStorageDb()->getStoredValue(1130, "ACT_Status");
+    QVariant status = veinStorageDb->getStoredValue(1130, "ACT_Status");
+
+    QList<QString> comp1150 = veinStorageDb->getComponentList(1150);
+    QVERIFY(comp1150.length() == 17);
+    QVERIFY(veinStorageDb->hasStoredValue(1150, "PAR_SerialNr") == true);
+
+    QVariant serial = veinStorageDb->getStoredValue(1150, "PAR_SerialNr");
 }
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
