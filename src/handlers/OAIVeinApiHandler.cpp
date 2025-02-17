@@ -17,6 +17,7 @@
 
 #include "OAIVeinApiHandler.h"
 #include "OAIVeinApiRequest.h"
+#include "actualvaluesprovider.h"
 #include "veinentrysingleton.h"
 
 namespace OpenAPI {
@@ -33,8 +34,9 @@ void OAIVeinApiHandler::apiV1VeinActualValuesGet() {
     auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
     if( reqObj != nullptr )
     {
-        OAIVeinGetActualValues res;
+        ActualValuesProvider valueProvider;
 
+        OAIVeinGetActualValues res = valueProvider.getActualValues(VeinEntrySingleton::getInstance().getStorageDb());
         reqObj->apiV1VeinActualValuesGetResponse(res);
     }
 }

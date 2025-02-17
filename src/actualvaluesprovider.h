@@ -16,6 +16,13 @@ public:
 private:
     OpenAPI::OAIVeinGetActualValues_DftModule1 getDftValues(VeinStorage::AbstractDatabase* storage);
     OpenAPI::OAIPowerModule getPowerModule(VeinStorage::AbstractDatabase* storage, veinRestEntityIds powerModuleNo);
+    OpenAPI::OAIVeinGetActualValues_RangeModule1 getRangeValues(VeinStorage::AbstractDatabase* storage);
+    OpenAPI::OAIVeinGetActualValues_RMSModule1 getRmsValues(VeinStorage::AbstractDatabase* storage);
+    OpenAPI::OAIVeinGetActualValues_FFTModule1 getFftValues(VeinStorage::AbstractDatabase* storage);
+    OpenAPI::OAIVeinGetActualValues_LambdaModule1 getLambdaValues(VeinStorage::AbstractDatabase* storage);
+
+    bool isDc(VeinStorage::AbstractDatabase* storage);
+
     QVariant extractFromStorage(VeinStorage::AbstractDatabase* storage, veinRestEntityIds entityId, QString componentName);
 
     template <typename T>
