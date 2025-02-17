@@ -43,9 +43,11 @@ VeinEntrySingleton::VeinEntrySingleton(VeinTcp::AbstractTcpNetworkFactoryPtr tcp
     connect(&m_tcpSystem, &VeinNet::TcpSystem::sigConnnectionEstablished, this, [&](){
         m_dummyComponentList = std::make_unique<QStringList>();
 
+        m_subscriberTask->addSub(createSubscriptionTask(   0, "SystemModule"));
         m_subscriberTask->addSub(createSubscriptionTask(1050, "DFTModule"));
         m_subscriberTask->addSub(createSubscriptionTask(1130, "SEC1Module1"));
         m_subscriberTask->addSub(createSubscriptionTask(1150, "StatusModule1"));
+        m_subscriberTask->addSub(createSubscriptionTask(1170, "Power1Module1"));
 
         m_subscriberTask->start();
     });
