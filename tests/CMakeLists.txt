@@ -22,3 +22,11 @@ endfunction()
 SETUP_TESTS(
     test_storage
 )
+
+set(GENERATED_SERVER_SRC_DIR "${CMAKE_BINARY_DIR}/server/src")
+
+include_directories(
+    ${GENERATED_SERVER_SRC_DIR}/models
+    ${GENERATED_SERVER_SRC_DIR}/handlers
+    ${GENERATED_SERVER_SRC_DIR}/requests
+)

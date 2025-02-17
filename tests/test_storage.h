@@ -11,11 +11,12 @@ class test_storage : public QObject
 private slots:
     void initTestCase();
     void access_storage_of_vein_singleton();
+    void actual_value_get_valid();
 
 private:
-    void waitForSignal(QSignalSpy &signalSpy, int expectedNumberOfSignals);
     std::unique_ptr<ModuleManagerTestRunner> setupModuleManager(QString config);
 
+    std::unique_ptr<ModuleManagerTestRunner> m_testRunner;
 signals:
 };
 

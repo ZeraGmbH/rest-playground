@@ -1,4 +1,5 @@
 #include "test_storage.h"
+#include "actualvaluesprovider.h"
 #include "veinentrysingleton.h"
 #include <modulemanager.h>
 #include <modulemanagertestrunner.h>
@@ -21,16 +22,16 @@ enum dspInterfaces{
 void test_storage::initTestCase()
 {
     TimerFactoryQtForTest::enableTest();
+    m_testRunner = setupModuleManager(ZeraModules::ModuleManager::getInstalledSessionPath() + "/mt310s2-emob-session-ac.json");
+
 }
 
 void test_storage::access_storage_of_vein_singleton()
 {
-    std::unique_ptr<ModuleManagerTestRunner> testRunner = setupModuleManager(ZeraModules::ModuleManager::getInstalledSessionPath() + "/mt310s2-emob-session-ac.json");
-
     VeinEntrySingleton& veinSingleton = VeinEntrySingleton::getInstance();
     VeinStorage::AbstractDatabase* veinStorageDb = veinSingleton.getStorageDb();
 
-    TestDspInterfacePtr dspInterface = testRunner->getDspInterfaceList()[6];
+    TestDspInterfacePtr dspInterface = m_testRunner->getDspInterfaceList()[6];
     TestDspValues dspValues(dspInterface->getValueList());
 
     dspValues.setAllValuesSymmetricAc(5, 5, 0, 50);
@@ -44,6 +45,25 @@ void test_storage::access_storage_of_vein_singleton()
     QList<double> exampleValue = veinStorageDb->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
 
     QVERIFY(exampleValue[0] == 7.071067810058594);
+}
+
+void test_storage::actual_value_get_valid()
+{
+    TestDspInterfacePtr dspInterface = m_testRunner->getDspInterfaceList()[6];
+    TestDspValues dspValues(dspInterface->getValueList());
+
+    dspValues.setAllValuesSymmetricAc(5, 5, 5, 50);
+    dspValues.fireDftActualValues(dspInterface);
+    TimeMachineObject::feedEventLoop();
+
+    ActualValuesProvider provider;
+
+    OpenAPI::OAIVeinGetActualValues actualValues = provider.getActualValues(VeinEntrySingleton::getInstance().getStorageDb());
+    QCOMPARE(actualValues.getDftModule1().getRfield(), "123");
+    QVERIFY(actualValues.getDftModule1().getActDftpn1Deg() == 0);
+    QVERIFY(actualValues.getDftModule1().getActDftpn2Deg() == 119.99999957375515);
+    QVERIFY(actualValues.getDftModule1().getActDftpn3Deg() == 240.00000042624484);
+    QVERIFY(actualValues.getDftModule1().getActDftpn4Deg() == 5.000000125275222);
 }
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
@@ -67,14 +87,4 @@ std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QStrin
     TimeMachineObject::feedEventLoop();
 
     return testRunner;
-}
-
-void test_storage::waitForSignal(QSignalSpy &signalSpy, int expectedNumberOfSignals)
-{
-    for(int i=0; i<100; i++) {
-        if(signalSpy.count() < expectedNumberOfSignals)
-            QTest::qWait(10);
-        else
-            break;
-    }
 }
