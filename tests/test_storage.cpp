@@ -34,32 +34,32 @@ void test_storage::access_storage_of_vein_singleton()
     dspValues.fireDftActualValues(dspInterface);
     TimeMachineObject::feedEventLoop();
 
-    auto comp1050 = VeinEntrySingleton::getInstance().getStorageDb()->getComponentList(1050);
+    QList<QString> comp1050 = VeinEntrySingleton::getInstance().getStorageDb()->getComponentList(1050);
     QVERIFY(comp1050.length() == 28);
     QVERIFY(VeinEntrySingleton::getInstance().getStorageDb()->hasStoredValue(1050, "ACT_POL_DFTPN4") == true);
 
-    auto exampleValue = VeinEntrySingleton::getInstance().getStorageDb()->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
+    QList<double> exampleValue = VeinEntrySingleton::getInstance().getStorageDb()->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
 
     QVERIFY(exampleValue[0] == 7.071067810058594);
 
-    auto comp1130 = VeinEntrySingleton::getInstance().getStorageDb()->getComponentList(1130);
+    QList<QString> comp1130 = VeinEntrySingleton::getInstance().getStorageDb()->getComponentList(1130);
     QVERIFY(comp1130.length() == 37);
     QVERIFY(VeinEntrySingleton::getInstance().getStorageDb()->hasStoredValue(1130, "ACT_Status") == true);
 
-    auto status = VeinEntrySingleton::getInstance().getStorageDb()->getStoredValue(1130, "ACT_Status");
+    QVariant status = VeinEntrySingleton::getInstance().getStorageDb()->getStoredValue(1130, "ACT_Status");
 }
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
 {
     // Use mock channel for VEIN communiation.
-    auto mockedTcp = VeinTcp::MockTcpNetworkFactory::create();
+    VeinTcp::AbstractTcpNetworkFactoryPtr mockedTcp = VeinTcp::MockTcpNetworkFactory::create();
 
     // Setup the simulated VEIN server.
-    auto testRunner = std::make_unique<ModuleManagerTestRunner>(config);
-    auto netSystem = new VeinNet::NetworkSystem();
+    std::unique_ptr<ModuleManagerTestRunner> testRunner = std::make_unique<ModuleManagerTestRunner>(config);
+    VeinNet::NetworkSystem* netSystem = new VeinNet::NetworkSystem();
     netSystem->setOperationMode(VeinNet::NetworkSystem::VNOM_PASS_THROUGH);
 
-    auto tcpSystem = new VeinNet::TcpSystem(mockedTcp);
+    VeinNet::TcpSystem* tcpSystem = new VeinNet::TcpSystem(mockedTcp);
 
     // Keep in order.
     testRunner->getModManFacade()->addSubsystem(netSystem);
