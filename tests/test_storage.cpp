@@ -51,27 +51,22 @@ void test_storage::access_storage_of_vein_singleton()
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
 {
-    // Use mock channel for VEIN communiation.
-    VeinTcp::AbstractTcpNetworkFactoryPtr mockedTcp = VeinTcp::MockTcpNetworkFactory::create();
+    VeinTcp::AbstractTcpNetworkFactoryPtr mockedVeinNetworkFactory = VeinTcp::MockTcpNetworkFactory::create();
 
-    // Setup the simulated VEIN server.
     std::unique_ptr<ModuleManagerTestRunner> testRunner = std::make_unique<ModuleManagerTestRunner>(config);
     VeinNet::NetworkSystem* netSystem = new VeinNet::NetworkSystem();
     netSystem->setOperationMode(VeinNet::NetworkSystem::VNOM_PASS_THROUGH);
 
-    VeinNet::TcpSystem* tcpSystem = new VeinNet::TcpSystem(mockedTcp);
+    VeinNet::TcpSystem* tcpSystem = new VeinNet::TcpSystem(mockedVeinNetworkFactory);
 
-    // Keep in order.
+    // Order is important.
     testRunner->getModManFacade()->addSubsystem(netSystem);
     testRunner->getModManFacade()->addSubsystem(tcpSystem);
 
-    // Simulate client connect to VEIN port.
     tcpSystem->startServer(12000);
 
-    // Setup the VEIN client infrastruture.
-    VeinEntrySingleton::getInstance(mockedTcp);
+    VeinEntrySingleton::getInstance(mockedVeinNetworkFactory);
 
-    // Fire up event system
     TimeMachineObject::feedEventLoop();
 
     return testRunner;
