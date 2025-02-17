@@ -24,6 +24,7 @@
 #include <qhttpengine/handler.h>
 #include <qhttpengine/qobjecthandler.h>
 
+#include "OAIActualValuesApiHandler.h"
 #include "OAIVeinApiHandler.h"
 
 
@@ -61,6 +62,7 @@ public:
     void setUpRoutes();
     void processRequest(QHttpEngine::Socket *socket);
 
+    void setOAIActualValuesApiHandler(QSharedPointer<OAIActualValuesApiHandler> handler);
     void setOAIVeinApiHandler(QSharedPointer<OAIVeinApiHandler> handler);
 private:
     QMap<QString, std::function<void(QHttpEngine::Socket *)>> Routes;
@@ -70,6 +72,7 @@ private:
     bool handleRequestAndExtractPathParam(QHttpEngine::Socket *socket);
 
 
+    QSharedPointer<OAIActualValuesApiHandler> mOAIActualValuesApiHandler;
     QSharedPointer<OAIVeinApiHandler> mOAIVeinApiHandler;
 protected:
     // override this method to provide custom class derived from ApiHandler classes
@@ -78,22 +81,22 @@ protected:
 private :
     inline QString fromQHttpEngineMethod(QHttpEngine::Socket::Method method){
         switch( method ){
-            case QHttpEngine::Socket::Method::OPTIONS:
-                return QStringLiteral("OPTIONS");
-            case QHttpEngine::Socket::Method::GET:
-                return QStringLiteral("GET");
-            case QHttpEngine::Socket::Method::HEAD:
-                return QStringLiteral("HEAD");
-            case QHttpEngine::Socket::Method::POST:
-                return QStringLiteral("POST");
-            case QHttpEngine::Socket::Method::PUT:
-                return QStringLiteral("PUT");
-            case QHttpEngine::Socket::Method::DELETE:
-                return QStringLiteral("DELETE");
-            case QHttpEngine::Socket::Method::TRACE:
-                return QStringLiteral("TRACE");
-            case QHttpEngine::Socket::Method::CONNECT:
-                return QStringLiteral("CONNECT");
+        case QHttpEngine::Socket::Method::OPTIONS:
+            return QStringLiteral("OPTIONS");
+        case QHttpEngine::Socket::Method::GET:
+            return QStringLiteral("GET");
+        case QHttpEngine::Socket::Method::HEAD:
+            return QStringLiteral("HEAD");
+        case QHttpEngine::Socket::Method::POST:
+            return QStringLiteral("POST");
+        case QHttpEngine::Socket::Method::PUT:
+            return QStringLiteral("PUT");
+        case QHttpEngine::Socket::Method::DELETE:
+            return QStringLiteral("DELETE");
+        case QHttpEngine::Socket::Method::TRACE:
+            return QStringLiteral("TRACE");
+        case QHttpEngine::Socket::Method::CONNECT:
+            return QStringLiteral("CONNECT");
         }
         return QStringLiteral("");
     }

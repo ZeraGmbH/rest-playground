@@ -15,6 +15,7 @@
 #include <QObject>
 
 #include "OAIProblemDetails.h"
+#include "OAIVeinGetActualValues.h"
 #include "OAIVeinGetResponse.h"
 #include "OAIVeinSet.h"
 #include <QString>
@@ -31,6 +32,7 @@ public:
 
 
 public slots:
+    virtual void apiV1VeinActualValuesGet();
     virtual void apiV1VeinGet(qint32 entity_id, QString component_name);
     virtual void apiV1VeinPut(OAIVeinSet oai_vein_set);
 

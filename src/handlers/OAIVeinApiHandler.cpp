@@ -29,6 +29,16 @@ OAIVeinApiHandler::~OAIVeinApiHandler(){
 
 }
 
+void OAIVeinApiHandler::apiV1VeinActualValuesGet() {
+    auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
+    if( reqObj != nullptr )
+    {
+        OAIVeinGetActualValues res;
+
+        reqObj->apiV1VeinActualValuesGetResponse(res);
+    }
+}
+
 void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
     Q_UNUSED(entity_id);
     Q_UNUSED(component_name);

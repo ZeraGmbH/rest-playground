@@ -5,7 +5,6 @@
 #include <QCoreApplication>
 #include <taskcontainerparallel.h>
 
-
 TaskSimpleVeinGetterPtr VeinEntrySingleton::getFromVein(int entityId, QString componentName)
 {
     TaskSimpleVeinGetterPtr task = TaskSimpleVeinGetter::create(entityId, componentName, m_cmdEventHandlerSystem);

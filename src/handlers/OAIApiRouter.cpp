@@ -16,6 +16,7 @@
 
 
 #include "OAIApiRouter.h"
+#include "OAIActualValuesApiRequest.h"
 #include "OAIVeinApiRequest.h"
 
 
@@ -29,17 +30,29 @@ OAIApiRouter::~OAIApiRouter(){
 
 }
 
-void OAIApiRouter::createApiHandlers() { 
+void OAIApiRouter::createApiHandlers() {
+    mOAIActualValuesApiHandler = QSharedPointer<OAIActualValuesApiHandler>::create();
     mOAIVeinApiHandler = QSharedPointer<OAIVeinApiHandler>::create();
 }
 
 
+void OAIApiRouter::setOAIActualValuesApiHandler(QSharedPointer<OAIActualValuesApiHandler> handler){
+    mOAIActualValuesApiHandler = handler;
+}
 void OAIApiRouter::setOAIVeinApiHandler(QSharedPointer<OAIVeinApiHandler> handler){
     mOAIVeinApiHandler = handler;
 }
 
 void OAIApiRouter::setUpRoutes() {
 
+    Routes.insert(QString("%1 %2").arg("GET").arg("/api/v1/Vein/ActualValues").toLower(), [this](QHttpEngine::Socket *socket) {
+        auto reqObj = new OAIActualValuesApiRequest(socket, mOAIActualValuesApiHandler);
+        reqObj->apiV1VeinActualValuesGetRequest();
+    });
+    Routes.insert(QString("%1 %2").arg("GET").arg("/api/v1/Vein/ActualValues").toLower(), [this](QHttpEngine::Socket *socket) {
+        auto reqObj = new OAIVeinApiRequest(socket, mOAIVeinApiHandler);
+        reqObj->apiV1VeinActualValuesGetRequest();
+    });
     Routes.insert(QString("%1 %2").arg("GET").arg("/api/v1/Vein/").toLower(), [this](QHttpEngine::Socket *socket) {
         auto reqObj = new OAIVeinApiRequest(socket, mOAIVeinApiHandler);
         reqObj->apiV1VeinGetRequest();
