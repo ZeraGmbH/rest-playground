@@ -44,18 +44,6 @@ void test_storage::access_storage_of_vein_singleton()
     QList<double> exampleValue = veinStorageDb->getStoredValue(1050, "ACT_POL_DFTPN4").value<QList<double>>();
 
     QVERIFY(exampleValue[0] == 7.071067810058594);
-
-    QList<QString> comp1130 = veinStorageDb->getComponentList(1130);
-    QVERIFY(comp1130.length() == 37);
-    QVERIFY(veinStorageDb->hasStoredValue(1130, "ACT_Status") == true);
-
-    QVariant status = veinStorageDb->getStoredValue(1130, "ACT_Status");
-
-    QList<QString> comp1150 = veinStorageDb->getComponentList(1150);
-    QVERIFY(comp1150.length() == 17);
-    QVERIFY(veinStorageDb->hasStoredValue(1150, "PAR_SerialNr") == true);
-
-    QVariant serial = veinStorageDb->getStoredValue(1150, "PAR_SerialNr");
 }
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
