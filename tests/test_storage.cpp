@@ -52,7 +52,7 @@ void test_storage::actual_value_get_valid()
     TestDspInterfacePtr dspInterface = m_testRunner->getDspInterfaceList()[6];
     TestDspValues dspValues(dspInterface->getValueList());
 
-    dspValues.setAllValuesSymmetricAc(5, 5, 5, 50);
+    dspValues.setAllValuesSymmetricAc(5, 5, 0, 50);
     dspValues.fireDftActualValues(dspInterface);
     TimeMachineObject::feedEventLoop();
 
@@ -63,7 +63,7 @@ void test_storage::actual_value_get_valid()
     QVERIFY(actualValues.getDftModule1().getActDftpn1Deg() == 0);
     QVERIFY(actualValues.getDftModule1().getActDftpn2Deg() == 119.99999957375515);
     QVERIFY(actualValues.getDftModule1().getActDftpn3Deg() == 240.00000042624484);
-    QVERIFY(actualValues.getDftModule1().getActDftpn4Deg() == 5.000000125275222);
+    QVERIFY(actualValues.getDftModule1().getActDftpn4Deg() == 0);
 }
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)

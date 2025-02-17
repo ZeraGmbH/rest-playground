@@ -9,6 +9,7 @@ ActualValuesProvider::ActualValuesProvider()
 OpenAPI::OAIVeinGetActualValues ActualValuesProvider::getActualValues(VeinStorage::AbstractDatabase *storage)
 {
     OpenAPI::OAIVeinGetActualValues res;
+
     bool dcSession = isDc(storage);
     if(dcSession)
     {
@@ -27,6 +28,7 @@ OpenAPI::OAIVeinGetActualValues ActualValuesProvider::getActualValues(VeinStorag
         res.setLambdaModule1(getLambdaValues(storage));
     }
 
+    res.setIsDc(dcSession);
     return res;
 }
 
@@ -34,32 +36,32 @@ OpenAPI::OAIVeinGetActualValues_DftModule1 ActualValuesProvider::getDftValues(Ve
 {
     OpenAPI::OAIVeinGetActualValues_DftModule1 res;
 
-    QString rfield = safeConvert<QString>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_RFIELD"));
-    res.setRfield(rfield);
+    QVariant rfield = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_RFIELD");
+    if(rfield.canConvert<QString>()) res.setRfield(rfield.value<QString>());
 
-    QList<double> polDftpn1 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN1"));
-    res.setActDftpn1Deg(polDftpn1.size() >= 2 ? polDftpn1[2] : 0);
+    QVariant polDftpn1 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN1");
+    if(polDftpn1.canConvert<QList<double>>()) res.setActDftpn1Deg(polDftpn1.value<QList<double>>().size() >= 2 ? polDftpn1.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn2 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN2"));
-    res.setActDftpn2Deg(polDftpn2.size() >= 2 ? polDftpn2[2] : 0);
+    QVariant polDftpn2 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN2");
+    if(polDftpn2.canConvert<QList<double>>()) res.setActDftpn2Deg(polDftpn2.value<QList<double>>().size() >= 2 ? polDftpn2.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn3 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN3"));
-    res.setActDftpn3Deg(polDftpn3.size() >= 2 ? polDftpn3[2] : 0);
+    QVariant polDftpn3 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN3");
+    if(polDftpn3.canConvert<QList<double>>()) res.setActDftpn3Deg(polDftpn3.value<QList<double>>().size() >= 2 ? polDftpn3.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn4 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN4"));
-    res.setActDftpn4Deg(polDftpn4.size() >= 2 ? polDftpn4[2] : 0);
+    QVariant polDftpn4 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN4");
+    if(polDftpn4.canConvert<QList<double>>()) res.setActDftpn4Deg(polDftpn4.value<QList<double>>().size() >= 2 ? polDftpn4.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn5 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN5"));
-    res.setActDftpn5Deg(polDftpn5.size() >= 2 ? polDftpn5[2] : 0);
+    QVariant polDftpn5 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN5");
+    if(polDftpn5.canConvert<QList<double>>()) res.setActDftpn5Deg(polDftpn5.value<QList<double>>().size() >= 2 ? polDftpn5.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn6 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN6"));
-    res.setActDftpn6Deg(polDftpn6.size() >= 2 ? polDftpn6[2] : 0);
+    QVariant polDftpn6 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN6");
+    if(polDftpn6.canConvert<QList<double>>()) res.setActDftpn6Deg(polDftpn6.value<QList<double>>().size() >= 2 ? polDftpn6.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn7 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN7"));
-    res.setActDftpn7Deg(polDftpn7.size() >= 2 ? polDftpn7[2] : 0);
+    QVariant polDftpn7 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN7");
+    if(polDftpn7.canConvert<QList<double>>()) res.setActDftpn7Deg(polDftpn7.value<QList<double>>().size() >= 2 ? polDftpn7.value<QList<double>>()[2] : 0);
 
-    QList<double> polDftpn8 = safeConvert<QList<double>>(extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN8"));
-    res.setActDftpn8Deg(polDftpn8.size() >= 2 ? polDftpn8[2] : 0);
+    QVariant polDftpn8 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN8");
+    if(polDftpn8.canConvert<QList<double>>()) res.setActDftpn8Deg(polDftpn8.value<QList<double>>().size() >= 2 ? polDftpn8.value<QList<double>>()[2] : 0);
 
     return res;
 }
@@ -68,26 +70,26 @@ OpenAPI::OAIPowerModule ActualValuesProvider::getPowerModule(VeinStorage::Abstra
 {
     OpenAPI::OAIPowerModule res;
 
-    double pqs1 = safeConvert<double>(extractFromStorage(storage, powerModuleNo, "ACT_PQS1"));
-    res.setActPqs1(pqs1);
+    QVariant pqs1 = extractFromStorage(storage, powerModuleNo, "ACT_PQS1");
+    if(pqs1.canConvert<double>()) res.setActPqs1(pqs1.value<double>());
 
-    double pqs2 = safeConvert<double>(extractFromStorage(storage, powerModuleNo, "ACT_PQS2"));
-    res.setActPqs2(pqs2);
+    QVariant pqs2 = extractFromStorage(storage, powerModuleNo, "ACT_PQS2");
+    if(pqs2.canConvert<double>()) res.setActPqs2(pqs2.value<double>());
 
-    double pqs3 = safeConvert<double>(extractFromStorage(storage, powerModuleNo, "ACT_PQS3"));
-    res.setActPqs3(pqs3);
+    QVariant pqs3 = extractFromStorage(storage, powerModuleNo, "ACT_PQS3");
+    if(pqs3.canConvert<double>()) res.setActPqs3(pqs3.value<double>());
 
-    double pqs4 = safeConvert<double>(extractFromStorage(storage, powerModuleNo, "ACT_PQS4"));
-    res.setActPqs4(pqs4);
+    QVariant pqs4 = extractFromStorage(storage, powerModuleNo, "ACT_PQS4");
+    if(pqs4.canConvert<double>()) res.setActPqs4(pqs4.value<double>());
 
-    double foutConstant = safeConvert<double>(extractFromStorage(storage, powerModuleNo, "PAR_FOUTConstant0"));
-    res.setParFoutConstant0(foutConstant);
+    QVariant foutConstant = extractFromStorage(storage, powerModuleNo, "PAR_FOUTConstant0");
+    if(foutConstant.canConvert<double>()) res.setParFoutConstant0(foutConstant.value<double>());
 
-    QString measuringMode = safeConvert<QString>(extractFromStorage(storage, powerModuleNo, "PAR_MeasuringMode"));
-    res.setParMeasuringMode(measuringMode);
+    QVariant measuringMode = extractFromStorage(storage, powerModuleNo, "PAR_MeasuringMode");
+    if(measuringMode.canConvert<QString>()) res.setParMeasuringMode(measuringMode.value<QString>());
 
-    QString measModePhaseSelect = safeConvert<QString>(extractFromStorage(storage, powerModuleNo, "PAR_MeasModePhaseSelect"));
-    res.setParMeasuringMode(measModePhaseSelect);
+    QVariant measModePhaseSelect = extractFromStorage(storage, powerModuleNo, "PAR_MeasModePhaseSelect");
+    if(measModePhaseSelect.canConvert<QString>()) res.setParMeasModePhaseSelect(measModePhaseSelect.value<QString>());
 
     return res;
 }
@@ -96,8 +98,8 @@ OpenAPI::OAIVeinGetActualValues_RangeModule1 ActualValuesProvider::getRangeValue
 {
     OpenAPI::OAIVeinGetActualValues_RangeModule1 res;
 
-    double frequency = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RANGEMODULE1, "ACT_Frequency"));
-    res.setFrequency(frequency);
+    QVariant frequency = extractFromStorage(storage, veinRestEntityIds::RANGEMODULE1, "ACT_Frequency");
+    if(frequency.canConvert<double>()) res.setFrequency(frequency.value<double>());
 
     return res;
 }
@@ -106,29 +108,29 @@ OpenAPI::OAIVeinGetActualValues_RMSModule1 ActualValuesProvider::getRmsValues(Ve
 {
     OpenAPI::OAIVeinGetActualValues_RMSModule1 res;
 
-    double rmsPn1 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN1"));
-    res.setActRmspn1(rmsPn1);
+    QVariant rmsPn1 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN1");
+    if(rmsPn1.canConvert<double>()) res.setActRmspn1(rmsPn1.value<double>());
 
-    double rmsPn2 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN2"));
-    res.setActRmspn2(rmsPn2);
+    QVariant rmsPn2 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN2");
+    if(rmsPn2.canConvert<double>()) res.setActRmspn2(rmsPn2.value<double>());
 
-    double rmsPn3 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN3"));
-    res.setActRmspn3(rmsPn3);
+    QVariant rmsPn3 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN3");
+    if(rmsPn3.canConvert<double>()) res.setActRmspn3(rmsPn3.value<double>());
 
-    double rmsPn4 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN4"));
-    res.setActRmspn4(rmsPn4);
+    QVariant rmsPn4 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN4");
+    if(rmsPn4.canConvert<double>()) res.setActRmspn4(rmsPn4.value<double>());
 
-    double rmsPn5 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN5"));
-    res.setActRmspn5(rmsPn5);
+    QVariant rmsPn5 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN5");
+    if(rmsPn5.canConvert<double>()) res.setActRmspn5(rmsPn5.value<double>());
 
-    double rmsPn6 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN6"));
-    res.setActRmspn6(rmsPn6);
+    QVariant rmsPn6 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN6");
+    if(rmsPn6.canConvert<double>()) res.setActRmspn6(rmsPn6.value<double>());
 
-    double rmsPn7 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN7"));
-    res.setActRmspn7(rmsPn7);
+    QVariant rmsPn7 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN7");
+    if(rmsPn7.canConvert<double>()) res.setActRmspn7(rmsPn7.value<double>());
 
-    double rmsPn8 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN8"));
-    res.setActRmspn8(rmsPn8);
+    QVariant rmsPn8 = extractFromStorage(storage, veinRestEntityIds::RMSMODULE1, "ACT_RMSPN8");
+    if(rmsPn8.canConvert<double>()) res.setActRmspn8(rmsPn8.value<double>());
 
     return res;
 }
@@ -137,29 +139,29 @@ OpenAPI::OAIVeinGetActualValues_FFTModule1 ActualValuesProvider::getFftValues(Ve
 {
     OpenAPI::OAIVeinGetActualValues_FFTModule1 res;
 
-    double fftDc1 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC1"));
-    res.setActDc1(fftDc1);
+    QVariant fftDc1 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC1");
+    if(fftDc1.canConvert<double>()) res.setActDc1(fftDc1.value<double>());
 
-    double fftDc2 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC2"));
-    res.setActDc2(fftDc2);
+    QVariant fftDc2 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC2");
+    if(fftDc2.canConvert<double>()) res.setActDc2(fftDc2.value<double>());
 
-    double fftDc3 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC3"));
-    res.setActDc3(fftDc3);
+    QVariant fftDc3 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC3");
+    if(fftDc3.canConvert<double>()) res.setActDc3(fftDc3.value<double>());
 
-    double fftDc4 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC4"));
-    res.setActDc4(fftDc4);
+    QVariant fftDc4 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC4");
+    if(fftDc4.canConvert<double>()) res.setActDc4(fftDc4.value<double>());
 
-    double fftDc5 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC5"));
-    res.setActDc5(fftDc5);
+    QVariant fftDc5 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC5");
+    if(fftDc5.canConvert<double>()) res.setActDc5(fftDc5.value<double>());
 
-    double fftDc6 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC6"));
-    res.setActDc6(fftDc6);
+    QVariant fftDc6 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC6");
+    if(fftDc6.canConvert<double>()) res.setActDc6(fftDc6.value<double>());
 
-    double fftDc7 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC7"));
-    res.setActDc7(fftDc7);
+    QVariant fftDc7 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC7");
+    if(fftDc7.canConvert<double>()) res.setActDc7(fftDc7.value<double>());
 
-    double fftDc8 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC8"));
-    res.setActDc8(fftDc8);
+    QVariant fftDc8 = extractFromStorage(storage, veinRestEntityIds::FFTMODULE1, "ACT_DC8");
+    if(fftDc8.canConvert<double>()) res.setActDc8(fftDc8.value<double>());
 
     return res;
 }
@@ -168,17 +170,17 @@ OpenAPI::OAIVeinGetActualValues_LambdaModule1 ActualValuesProvider::getLambdaVal
 {
     OpenAPI::OAIVeinGetActualValues_LambdaModule1 res;
 
-    double lambda1 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda1"));
-    res.setActLambda1(lambda1);
+    QVariant lambda1 = extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda1");
+    if(lambda1.canConvert<double>()) res.setActLambda1(lambda1.value<double>());
 
-    double lambda2 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda2"));
-    res.setActLambda2(lambda2);
+    QVariant lambda2 = extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda2");
+    if(lambda2.canConvert<double>()) res.setActLambda2(lambda2.value<double>());
 
-    double lambda3 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda3"));
-    res.setActLambda3(lambda3);
+    QVariant lambda3 = extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda3");
+    if(lambda3.canConvert<double>()) res.setActLambda3(lambda3.value<double>());
 
-    double lambda4 = safeConvert<double>(extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda4"));
-    res.setActLambda4(lambda4);
+    QVariant lambda4 = extractFromStorage(storage, veinRestEntityIds::LAMBDAMODULE1, "ACT_Lambda4");
+    if(lambda4.canConvert<double>()) res.setActLambda4(lambda4.value<double>());
 
     return res;
 }
