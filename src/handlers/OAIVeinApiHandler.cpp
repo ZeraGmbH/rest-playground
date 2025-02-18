@@ -17,7 +17,6 @@
 
 #include "OAIVeinApiHandler.h"
 #include "OAIVeinApiRequest.h"
-#include "actualvaluesprovider.h"
 #include "veinentrysingleton.h"
 
 namespace OpenAPI {
@@ -30,16 +29,46 @@ OAIVeinApiHandler::~OAIVeinApiHandler(){
 
 }
 
-void OAIVeinApiHandler::apiV1VeinActualValuesGet() {
-    auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
-    if( reqObj != nullptr )
+QList<OAIVeinGetResponse> OAIVeinApiHandler::generateBulkAnswer(QList<OAIVeinGetRequest> oai_vein_get_request)
+{
+    QList<OAIVeinGetResponse> response;
+    for (const auto &item : oai_vein_get_request)
     {
-        ActualValuesProvider valueProvider;
+        int entityId = item.getEntityId();
+        QString componentName = item.getComponentName();
+        OAIVeinGetResponse responseEntry;
+        VeinStorage::AbstractDatabase* storage = VeinEntrySingleton::getInstance().getStorageDb();
 
-        OAIVeinGetActualValues res = valueProvider.getActualValues(VeinEntrySingleton::getInstance().getStorageDb());
-        reqObj->apiV1VeinActualValuesGetResponse(res);
+        responseEntry.setComponentName(componentName);
+        responseEntry.setEntityId(entityId);
+
+        if(storage->hasStoredValue(item.getEntityId(), item.getComponentName())){
+            QVariant value = storage->getStoredValue(item.getEntityId(), item.getComponentName());
+            responseEntry.setType(value.typeName());
+            if(value.canConvert<QString>())
+            {
+                responseEntry.setReturnInformation(value.toString());
+                responseEntry.setStatus(200);
+            }
+            else
+            {
+                responseEntry.setReturnInformation("");
+                responseEntry.setStatus(422);
+            }
+
+        }
+        else
+        {
+            responseEntry.setStatus(422);
+            responseEntry.setType("Invalid");
+            responseEntry.setReturnInformation("Timeout or not existing entity or component");
+        }
+
+        response.append(responseEntry);
     }
+    return response;
 }
+
 
 void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
     Q_UNUSED(entity_id);
@@ -51,7 +80,7 @@ void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
         std::shared_ptr<TaskSimpleVeinGetter> taskSharedPtr = std::move(task);
 
         auto conn = std::make_shared<QMetaObject::Connection>();
-        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, conn](bool ok, int taskId){
+        *conn = connect(taskSharedPtr.get(), &TaskTemplate::sigFinish, this, [reqObj, taskSharedPtr, conn, entity_id, component_name](bool ok, int taskId){
 
             OAIVeinGetResponse res;
             if (ok)
@@ -63,8 +92,11 @@ void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
                     QString jsonString = doc.toJson(QJsonDocument::Compact);
                     ret = jsonString;
                 }
+
                 res.setReturnInformation(ret.toString());
                 res.setType(taskSharedPtr->getValue().typeName());
+                res.setComponentName(component_name);
+                res.setEntityId(entity_id);
                 res.setStatus(200);
             }
             else
@@ -78,6 +110,17 @@ void OAIVeinApiHandler::apiV1VeinGet(qint32 entity_id, QString component_name) {
             disconnect(*conn);
         });
         taskSharedPtr->start();
+    }
+}
+
+void OAIVeinApiHandler::apiV1VeinPost(QList<OAIVeinGetRequest> oai_vein_get_request) {
+    Q_UNUSED(oai_vein_get_request);
+    auto reqObj = qobject_cast<OAIVeinApiRequest*>(sender());
+    if( reqObj != nullptr )
+    {
+        QList<OAIVeinGetResponse> res = generateBulkAnswer(oai_vein_get_request);
+
+        reqObj->apiV1VeinPostResponse(res);
     }
 }
 

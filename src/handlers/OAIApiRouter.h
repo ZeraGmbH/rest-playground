@@ -24,7 +24,6 @@
 #include <qhttpengine/handler.h>
 #include <qhttpengine/qobjecthandler.h>
 
-#include "OAIActualValuesApiHandler.h"
 #include "OAIVeinApiHandler.h"
 
 
@@ -62,7 +61,6 @@ public:
     void setUpRoutes();
     void processRequest(QHttpEngine::Socket *socket);
 
-    void setOAIActualValuesApiHandler(QSharedPointer<OAIActualValuesApiHandler> handler);
     void setOAIVeinApiHandler(QSharedPointer<OAIVeinApiHandler> handler);
 private:
     QMap<QString, std::function<void(QHttpEngine::Socket *)>> Routes;
@@ -72,7 +70,6 @@ private:
     bool handleRequestAndExtractPathParam(QHttpEngine::Socket *socket);
 
 
-    QSharedPointer<OAIActualValuesApiHandler> mOAIActualValuesApiHandler;
     QSharedPointer<OAIVeinApiHandler> mOAIVeinApiHandler;
 protected:
     // override this method to provide custom class derived from ApiHandler classes

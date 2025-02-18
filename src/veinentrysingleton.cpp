@@ -51,6 +51,7 @@ VeinEntrySingleton::VeinEntrySingleton(VeinTcp::AbstractTcpNetworkFactoryPtr tcp
         m_subscriberTask->addSub(createSubscriptionTask(veinRestEntityIds::RMSMODULE1, "RMSModule1"));
         m_subscriberTask->addSub(createSubscriptionTask(veinRestEntityIds::FFTMODULE1, "FFTModule1"));
         m_subscriberTask->addSub(createSubscriptionTask(veinRestEntityIds::LAMBDAMODULE1, "LambdaModule1"));
+        m_subscriberTask->addSub(createSubscriptionTask(veinRestEntityIds::SYSTEM, "_System"));
 
         m_subscriberTask->start();
     });

@@ -1,6 +1,6 @@
 #include "test_storage.h"
-#include "actualvaluesprovider.h"
 #include "veinentrysingleton.h"
+#include "handlers/OAIVeinApiHandler.h"
 #include <modulemanager.h>
 #include <modulemanagertestrunner.h>
 #include <timemachinefortest.h>
@@ -47,23 +47,24 @@ void test_storage::access_storage_of_vein_singleton()
     QVERIFY(exampleValue[0] == 7.071067810058594);
 }
 
-void test_storage::actual_value_get_valid()
+void test_storage::get_multiple_values()
 {
-    TestDspInterfacePtr dspInterface = m_testRunner->getDspInterfaceList()[6];
-    TestDspValues dspValues(dspInterface->getValueList());
-
-    dspValues.setAllValuesSymmetricAc(5, 5, 0, 50);
-    dspValues.fireDftActualValues(dspInterface);
+    VeinStorage::AbstractDatabase* veinStorageDb = VeinEntrySingleton::getInstance().getStorageDb();
+    m_testRunner->setVfComponent(1050, "PAR_Interval", QVariant(2));
+    m_testRunner->setVfComponent(1060, "PAR_Interval", QVariant(3));
     TimeMachineObject::feedEventLoop();
 
-    ActualValuesProvider provider;
+    OpenAPI::OAIVeinApiHandler handler;
 
-    OpenAPI::OAIVeinGetActualValues actualValues = provider.getActualValues(VeinEntrySingleton::getInstance().getStorageDb());
-    QCOMPARE(actualValues.getDftModule1().getRfield(), "123");
-    QVERIFY(actualValues.getDftModule1().getActDftpn1Deg() == 0);
-    QVERIFY(actualValues.getDftModule1().getActDftpn2Deg() == 119.99999957375515);
-    QVERIFY(actualValues.getDftModule1().getActDftpn3Deg() == 240.00000042624484);
-    QVERIFY(actualValues.getDftModule1().getActDftpn4Deg() == 0);
+    QList<OpenAPI::OAIVeinGetRequest> requests;
+    requests.append(OpenAPI::OAIVeinGetRequest("{\"EntityId\": 1050, \"ComponentName\": \"PAR_Interval\"}"));
+    requests.append(OpenAPI::OAIVeinGetRequest("{\"EntityId\": 1060, \"ComponentName\": \"PAR_Interval\"}"));
+
+    QList<OpenAPI::OAIVeinGetResponse> response = handler.generateBulkAnswer(requests);
+
+    QVERIFY(response.size() == 2);
+    QCOMPARE(response[0].getReturnInformation(), "2");
+    QCOMPARE(response[1].getReturnInformation(), "3");
 }
 
 std::unique_ptr<ModuleManagerTestRunner> test_storage::setupModuleManager(QString config)
