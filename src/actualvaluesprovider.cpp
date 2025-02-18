@@ -1,17 +1,92 @@
 #include "actualvaluesprovider.h"
 #include "commondefines.h"
 
+Q_DECLARE_METATYPE(QList<double>)
+
+
 ActualValuesProvider::ActualValuesProvider()
 {
-
+    qRegisterMetaType<QList<double>>("QList<double>");
 }
 
 OpenAPI::OAIVeinGetActualValues ActualValuesProvider::getActualValues(VeinStorage::AbstractDatabase *storage)
 {
-    OpenAPI::OAIVeinGetActualValues res;
-
     bool dcSession = isDc(storage);
-    if(dcSession)
+    relevantForWhichSession currentSession = dcSession ? relevantForWhichSession::DC : relevantForWhichSession::AC;
+    OpenAPI::OAIVeinGetActualValues res;
+    OpenAPI::OAIPowerModule power1module1;
+    OpenAPI::OAIPowerModule power1module2;
+    OpenAPI::OAIPowerModule power1module3;
+    OpenAPI::OAIPowerModule power1module4;
+    OpenAPI::OAIVeinGetActualValues_DftModule1 dftModule1;
+    OpenAPI::OAIVeinGetActualValues_RangeModule1 rangeModule1;
+    OpenAPI::OAIVeinGetActualValues_RMSModule1 rmsModule1;
+    OpenAPI::OAIVeinGetActualValues_FFTModule1 fftModule1;
+    OpenAPI::OAIVeinGetActualValues_LambdaModule1 lambdaModule1;
+
+    QList<componentMappingMetadata<double>> doubleMappings = {
+        {veinRestEntityIds::POWER1MODULE1, "ACT_PQS1", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs1(input);}},
+        {veinRestEntityIds::POWER1MODULE1, "ACT_PQS2", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs2(input);}},
+        {veinRestEntityIds::POWER1MODULE1, "ACT_PQS3", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs3(input);}},
+        {veinRestEntityIds::POWER1MODULE1, "ACT_PQS4", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs4(input);}},
+        {veinRestEntityIds::POWER1MODULE1, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setParFoutConstant0(input);}},
+        {veinRestEntityIds::POWER1MODULE2, "ACT_PQS1", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs1(input);}},
+        {veinRestEntityIds::POWER1MODULE2, "ACT_PQS2", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs2(input);}},
+        {veinRestEntityIds::POWER1MODULE2, "ACT_PQS3", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs3(input);}},
+        {veinRestEntityIds::POWER1MODULE2, "ACT_PQS4", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs4(input);}},
+        {veinRestEntityIds::POWER1MODULE2, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setParFoutConstant0(input);}},
+        {veinRestEntityIds::POWER1MODULE3, "ACT_PQS1", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs1(input);}},
+        {veinRestEntityIds::POWER1MODULE3, "ACT_PQS2", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs2(input);}},
+        {veinRestEntityIds::POWER1MODULE3, "ACT_PQS3", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs3(input);}},
+        {veinRestEntityIds::POWER1MODULE3, "ACT_PQS4", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs4(input);}},
+        {veinRestEntityIds::POWER1MODULE3, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setParFoutConstant0(input);}},
+        {veinRestEntityIds::POWER1MODULE4, "ACT_PQS1", relevantForWhichSession::AC,[&power1module4](double input){power1module4.setActPqs1(input);}},
+        {veinRestEntityIds::POWER1MODULE4, "ACT_PQS2", relevantForWhichSession::AC,[&power1module4](double input){power1module4.setActPqs2(input);}},
+        {veinRestEntityIds::POWER1MODULE4, "ACT_PQS3", relevantForWhichSession::AC,[&power1module4](double input){power1module4.setActPqs3(input);}},
+        {veinRestEntityIds::POWER1MODULE4, "ACT_PQS4", relevantForWhichSession::AC,[&power1module4](double input){power1module4.setActPqs4(input);}},
+        {veinRestEntityIds::POWER1MODULE4, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module4](double input){power1module4.setParFoutConstant0(input);}},
+    };
+
+    for(auto item : std::as_const(doubleMappings)) {
+        if (item.sessionRelevancy == relevantForWhichSession::ACDC || item.sessionRelevancy == currentSession) {
+            QVariant variantValue = extractFromStorage(storage, item.entityId, item.componentName);
+            if(variantValue.canConvert<double>()) item.insertionFunction(variantValue.value<double>());
+        }
+    }
+
+    //addPowerModuleToList(doubleMappings, veinRestEntityIds::POWER1MODULE1, power1module1);
+    //addPowerModuleToList(doubleMappings, veinRestEntityIds::POWER1MODULE2, power1module2);
+    //addPowerModuleToList(doubleMappings, veinRestEntityIds::POWER1MODULE3, power1module3);
+    //addPowerModuleToList(doubleMappings, veinRestEntityIds::POWER1MODULE4, power1module4);
+
+    /*doubleMappings.append({veinRestEntityIds::POWER1MODULE1, "ACT_PQS1", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs1(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE1, "ACT_PQS2", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs2(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE1, "ACT_PQS3", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs3(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE1, "ACT_PQS4", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setActPqs4(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE1, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module1](double input){power1module1.setParFoutConstant0(input);}});
+
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE2, "ACT_PQS1", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs1(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE2, "ACT_PQS2", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs2(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE2, "ACT_PQS3", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs3(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE2, "ACT_PQS4", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setActPqs4(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE2, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module2](double input){power1module2.setParFoutConstant0(input);}});
+
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE3, "ACT_PQS1", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs1(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE3, "ACT_PQS2", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs2(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE3, "ACT_PQS3", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs3(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE3, "ACT_PQS4", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setActPqs4(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE3, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&power1module3](double input){power1module3.setParFoutConstant0(input);}});
+
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE4, "ACT_PQS1", relevantForWhichSession::DC,[&power1module4](double input){power1module4.setActPqs1(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE4, "ACT_PQS2", relevantForWhichSession::DC,[&power1module4](double input){power1module4.setActPqs2(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE4, "ACT_PQS3", relevantForWhichSession::DC,[&power1module4](double input){power1module4.setActPqs3(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE4, "ACT_PQS4", relevantForWhichSession::DC,[&power1module4](double input){power1module4.setActPqs4(input);}});
+    doubleMappings.append({veinRestEntityIds::POWER1MODULE4, "PAR_FOUTConstant0", relevantForWhichSession::DC,[&power1module4](double input){power1module4.setParFoutConstant0(input);}});*/
+
+
+
+
+    /*if(dcSession)
     {
         res.setFftModule1(getFftValues(storage));
         res.setPower1Module4(getPowerModule(storage, veinRestEntityIds::POWER1MODULE4));
@@ -28,8 +103,29 @@ OpenAPI::OAIVeinGetActualValues ActualValuesProvider::getActualValues(VeinStorag
         res.setLambdaModule1(getLambdaValues(storage));
     }
 
-    res.setIsDc(dcSession);
+    res.setIsDc(dcSession);*/
+
+    //res.setDftModule1(dftModule1);
+    res.setDftModule1(getDftValues(storage));
+    res.setPower1Module1(power1module1);
+    res.setPower1Module2(power1module2);
+    res.setPower1Module3(power1module3);
+    res.setPower1Module4(power1module4);
+    res.setFftModule1(fftModule1);
+    res.setRangeModule1(rangeModule1);
+    res.setRmsModule1(rmsModule1);
+    res.setLambdaModule1(lambdaModule1);
     return res;
+}
+
+template<typename T>
+void ActualValuesProvider::addPowerModuleToList(QList<componentMappingMetadata<double> >& list, veinRestEntityIds entityId, T &responseObject)
+{
+    list.append({entityId, "ACT_PQS1", relevantForWhichSession::AC,[&responseObject](double input){responseObject.setActPqs1(input);}});
+    list.append({entityId, "ACT_PQS2", relevantForWhichSession::AC,[&responseObject](double input){responseObject.setActPqs2(input);}});
+    list.append({entityId, "ACT_PQS3", relevantForWhichSession::AC,[&responseObject](double input){responseObject.setActPqs3(input);}});
+    list.append({entityId, "ACT_PQS4", relevantForWhichSession::AC,[&responseObject](double input){responseObject.setActPqs4(input);}});
+    list.append({entityId, "PAR_FOUTConstant0", relevantForWhichSession::AC,[&responseObject](double input){responseObject.setParFoutConstant0(input);}});
 }
 
 OpenAPI::OAIVeinGetActualValues_DftModule1 ActualValuesProvider::getDftValues(VeinStorage::AbstractDatabase *storage)
@@ -40,6 +136,7 @@ OpenAPI::OAIVeinGetActualValues_DftModule1 ActualValuesProvider::getDftValues(Ve
     if(rfield.canConvert<QString>()) res.setRfield(rfield.value<QString>());
 
     QVariant polDftpn1 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN1");
+    auto test = polDftpn1.toJsonObject();
     if(polDftpn1.canConvert<QList<double>>()) res.setActDftpn1Deg(polDftpn1.value<QList<double>>().size() >= 2 ? polDftpn1.value<QList<double>>()[2] : 0);
 
     QVariant polDftpn2 = extractFromStorage(storage, veinRestEntityIds::DFTMODULE1, "ACT_POL_DFTPN2");
@@ -70,8 +167,10 @@ OpenAPI::OAIPowerModule ActualValuesProvider::getPowerModule(VeinStorage::Abstra
 {
     OpenAPI::OAIPowerModule res;
 
-    QVariant pqs1 = extractFromStorage(storage, powerModuleNo, "ACT_PQS1");
-    if(pqs1.canConvert<double>()) res.setActPqs1(pqs1.value<double>());
+
+
+    /*QVariant pqs1 = extractFromStorage(storage, powerModuleNo, "ACT_PQS1");
+    if(pqs1.canConvert<double>()) res.setActPqs1(pqs1.value<double>());*/
 
     QVariant pqs2 = extractFromStorage(storage, powerModuleNo, "ACT_PQS2");
     if(pqs2.canConvert<double>()) res.setActPqs2(pqs2.value<double>());
@@ -187,7 +286,7 @@ OpenAPI::OAIVeinGetActualValues_LambdaModule1 ActualValuesProvider::getLambdaVal
 
 bool ActualValuesProvider::isDc(VeinStorage::AbstractDatabase *storage)
 {
-    QString session = safeConvert<QString>(extractFromStorage(storage, veinRestEntityIds::SYSTEM, "SESSION"));
+    QString session = safeConvert<QString>(extractFromStorage(storage, veinRestEntityIds::SYSTEM, "Session"));
 
     return session.contains("emob-session-dc");
 }

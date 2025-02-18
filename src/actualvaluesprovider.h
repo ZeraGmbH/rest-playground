@@ -8,14 +8,30 @@
 
 class ActualValuesProvider : public QObject
 {
+    enum relevantForWhichSession {
+        AC = 0,
+        DC = 1,
+        ACDC = 2,
+    };
+
+    template <typename T>
+    struct componentMappingMetadata {
+        veinRestEntityIds entityId;
+        QString componentName;
+        relevantForWhichSession sessionRelevancy;
+        std::function<void(T)> insertionFunction;
+    };
+
     Q_OBJECT
 public:
     ActualValuesProvider();
     OpenAPI::OAIVeinGetActualValues getActualValues(VeinStorage::AbstractDatabase* storage);
 
 private:
+    template <typename T>
+    void addPowerModuleToList(QList<componentMappingMetadata<double>> &list , veinRestEntityIds entityId, T &responseObject);
     OpenAPI::OAIVeinGetActualValues_DftModule1 getDftValues(VeinStorage::AbstractDatabase* storage);
-    OpenAPI::OAIPowerModule getPowerModule(VeinStorage::AbstractDatabase* storage, veinRestEntityIds powerModuleNo);
+    OpenAPI::OAIPowerModule getPowerModule(VeinStorage::AbstractDatabase *storage, veinRestEntityIds powerModuleNo);
     OpenAPI::OAIVeinGetActualValues_RangeModule1 getRangeValues(VeinStorage::AbstractDatabase* storage);
     OpenAPI::OAIVeinGetActualValues_RMSModule1 getRmsValues(VeinStorage::AbstractDatabase* storage);
     OpenAPI::OAIVeinGetActualValues_FFTModule1 getFftValues(VeinStorage::AbstractDatabase* storage);
